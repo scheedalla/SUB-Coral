@@ -197,6 +197,7 @@ switch(process.env.NODE_ENV) {
 
 var FormSchema = require('./models/FormSchema.js').FormSchema;
 FormSchema.plugin(elmongoose, { host : elasticSearch.host,
+                          port : elasticSearch.port,
                           prefix: elasticSearch.prefix});
 var Forms = db.model('forms', FormSchema);
 
@@ -209,6 +210,7 @@ Forms.sync(function (err, numSynced) {
 
 var SubmissionSchema = require('./models/Submit.js').SubmissionSchema;
 SubmissionSchema.plugin(elmongoose, { host : elasticSearch.host,
+                                  port : elasticSearch.port,
                                   prefix: elasticSearch.prefix,
                                   grouper:'appId',
                                   flatten:'formData'});
@@ -235,6 +237,7 @@ var EndUser = db.model('users', EndUserSchema);
 
 var UserSchema = require('./models/User.js').UserSchema;
 UserSchema.plugin(elmongoose, { host : elasticSearch.host,
+                          port : elasticSearch.port,
                           prefix: elasticSearch.prefix});
 var User = db.model('customers', UserSchema);
 
@@ -247,6 +250,7 @@ User.sync(function (err, numSynced) {
 
 var AccountSchema = require('./models/Account.js').AccountSchema;
 AccountSchema.plugin(elmongoose, { host : elasticSearch.host,
+                          port : elasticSearch.port,
                           prefix: elasticSearch.prefix});
 var Account = db.model('accounts', AccountSchema);
 
@@ -497,7 +501,6 @@ app.get('/embed-test', application.embedTest());
 app.get('/edit/:id', application.edit(Forms));
 app.get('/hosted/:id', application.hosted(Forms));
 app.get('/addjson', application.addNewJson(Forms));
-app.get('/datelab', application.dateLab(Forms));
 app.get('/:appId/:msId/:upId/:subId/pup', application.pup(Forms, Sub));
 app.get('/approval', application.getApproval(Sub));
 app.get('/approval/:appId', application.getApprovalApp(Sub));

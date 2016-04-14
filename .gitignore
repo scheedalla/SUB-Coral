@@ -230,12 +230,7 @@ node_modules/
 public/javascripts/vendor/
 public/javascripts/resources/
 public/javascripts/resources/jquery/
-config.json
 public/javascripts/resources/angular-resource/
 list.txt
-config-ui.json
 db.js
-sub_config.js
-sub_config.json
-sub_config_arc_wweek.js
-sub_config_arc_wweek.json
+
