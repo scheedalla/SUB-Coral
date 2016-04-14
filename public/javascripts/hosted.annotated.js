@@ -1015,19 +1015,19 @@ var verifyLoginIdUrl = "https://subscribe.washingtonpost.com/person/verify-login
         	if(parseInt(attr.mediasetId) > 0 ){
         		mediasetDir = "/" + attr.mediasetId;
         	}
-        	var thumbnail = "//sub-cdn.washingtonpost.com/" + attr.submissionId +mediasetDir + "/0_thumb";
+        	var thumbnail = "//noname.com/" + attr.submissionId +mediasetDir + "/0_thumb";
             // Add a watch on the `focus-input` attribute.
             // Whenever the `focus-input` statement changes this callback function will be executed.
             scope.$watch(attr.photoPreview, function(value){
         		var i = 0
         		var imageHtml = "<br><div class='row' ><ul class='list-unstyled'>";
         		while (i < attr.numOfMedia) {
-				    imageHtml += "<li class='col-md-3'><br><img src='" + "//sub-cdn.washingtonpost.com/" + attr.submissionId + mediasetDir + "/"+i+"_thumb?" + value + "' err-src='/images/no-image-available.png' alt='image'/></li>";
+				    imageHtml += "<li class='col-md-3'><br><img src='" + "//noname.com/" + attr.submissionId + mediasetDir + "/"+i+"_thumb?" + value + "' err-src='/images/no-image-available.png' alt='image'/></li>";
 		            i++;
 				}
 				imageHtml = imageHtml + "</ul></div>";
 
-				$http.get("//sub-cdn.washingtonpost.com/" + attr.submissionId + mediasetDir+ "/0_thumb", {})
+				$http.get("//no-name.com/" + attr.submissionId + mediasetDir+ "/0_thumb", {})
             	.success(function(data, err){
             		scope.isPhotoUploaded = true;
             		var clonedElement = $compile(imageHtml)(scope, function(clonedElement, scope) {
@@ -1060,7 +1060,7 @@ var verifyLoginIdUrl = "https://subscribe.washingtonpost.com/person/verify-login
 										console.log("mediasetType is " + media[i].mediaSetType);
 										if(media[i].mediaSetType == "image"){
 												scope.isPhotoUploaded = true;
-										}										
+										}
 					        }
 					        var clonedElement = $compile("<ul class='list-unstyled'>"+fileHTML+"</ul>")(scope, function(clonedElement, scope) {
 					    //attach the clone to DOM document at the right place

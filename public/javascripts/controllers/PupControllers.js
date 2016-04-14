@@ -1,5 +1,5 @@
 angular.module('pupApp.controllers', ['angularFileUpload', 'uuids', 'ngResource','subPlatformServices', 'loggingModuleServices'])
-	   
+
        .controller('pupController', ['$scope', '$rootScope', '$fileUploader', '$http', '$location', '$sce', '$modal', '$anchorScroll', '$timeout', 'rfc4122', '$window', 'subService', 'subLogService', function ($scope, $rootScope, $fileUploader, $http, $location, $sce, $modal,$anchorScroll,$timeout, rfc4122, $window, subService, subLogService) {
         /******************** BEGIN: custom controller******************/
 
@@ -241,12 +241,12 @@ angular.module('pupApp.controllers', ['angularFileUpload', 'uuids', 'ngResource'
                 }
 
                 if(msId==0){
-                    if($scope.mediaset.mediaSetType == 'image'){subMedia.mediaUrlThumb = "//sub-cdn.washingtonpost.com/"+subId+"/"+$scope.uploader.queue[i].sequenceNumber+"_thumb";}
-                    subMedia.mediaUrl = "//sub-cdn.washingtonpost.com/"+subId+"/"+$scope.uploader.queue[i].sequenceNumber+subMedia.fileExtentions;
+                    if($scope.mediaset.mediaSetType == 'image'){subMedia.mediaUrlThumb = "//noname.com/"+subId+"/"+$scope.uploader.queue[i].sequenceNumber+"_thumb";}
+                    subMedia.mediaUrl = "//noname.com/"+subId+"/"+$scope.uploader.queue[i].sequenceNumber+subMedia.fileExtentions;
                 }
                 else if (msId>0){
-                    if($scope.mediaset.mediaSetType == 'image'){subMedia.mediaUrlThumb = "//sub-cdn.washingtonpost.com/"+subId+"/"+msId+"/"+$scope.uploader.queue[i].sequenceNumber+"_thumb";}
-                    subMedia.mediaUrl = "//sub-cdn.washingtonpost.com/"+subId+"/"+msId+"/"+$scope.uploader.queue[i].sequenceNumber+subMedia.fileExtentions;
+                    if($scope.mediaset.mediaSetType == 'image'){subMedia.mediaUrlThumb = "//noname.com/"+subId+"/"+msId+"/"+$scope.uploader.queue[i].sequenceNumber+"_thumb";}
+                    subMedia.mediaUrl = "//noname.com/"+subId+"/"+msId+"/"+$scope.uploader.queue[i].sequenceNumber+subMedia.fileExtentions;
                 }
 
                 thisMedia.push(subMedia);
@@ -469,7 +469,7 @@ angular.module('pupApp.controllers', ['angularFileUpload', 'uuids', 'ngResource'
             console.info('Complete', xhr, item, response);
             console.log("extensionsList", response.data.extensionsList)
             $scope.fileExtentions = "." + $scope.application.defaultImgFieldExt;
-            subLogService.debug({ message: "File Info", response: response.data}); 
+            subLogService.debug({ message: "File Info", response: response.data});
             if(response.data.extensionsList && response.data.extensionsList[0] != null){
                 $scope.fileExtentions = (response.data.extensionsList[0]);
                 console.log('file ext' + $scope.fileExtentions);

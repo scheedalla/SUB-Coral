@@ -1394,7 +1394,7 @@ angular.module('pupApp', [
 
     }]);
 angular.module('pupApp.controllers', ['angularFileUpload', 'uuids', 'ngResource','subPlatformServices', 'loggingModuleServices'])
-	   
+
        .controller('pupController', ['$scope', '$rootScope', '$fileUploader', '$http', '$location', '$sce', '$modal', '$anchorScroll', '$timeout', 'rfc4122', '$window', 'subService', 'subLogService', function ($scope, $rootScope, $fileUploader, $http, $location, $sce, $modal,$anchorScroll,$timeout, rfc4122, $window, subService, subLogService) {
         /******************** BEGIN: custom controller******************/
 
@@ -1636,12 +1636,12 @@ angular.module('pupApp.controllers', ['angularFileUpload', 'uuids', 'ngResource'
                 }
 
                 if(msId==0){
-                    if($scope.mediaset.mediaSetType == 'image'){subMedia.mediaUrlThumb = "//sub-cdn.washingtonpost.com/"+subId+"/"+$scope.uploader.queue[i].sequenceNumber+"_thumb";}
-                    subMedia.mediaUrl = "//sub-cdn.washingtonpost.com/"+subId+"/"+$scope.uploader.queue[i].sequenceNumber+subMedia.fileExtentions;
+                    if($scope.mediaset.mediaSetType == 'image'){subMedia.mediaUrlThumb = "//noname.com/"+subId+"/"+$scope.uploader.queue[i].sequenceNumber+"_thumb";}
+                    subMedia.mediaUrl = "//noname.com/"+subId+"/"+$scope.uploader.queue[i].sequenceNumber+subMedia.fileExtentions;
                 }
                 else if (msId>0){
-                    if($scope.mediaset.mediaSetType == 'image'){subMedia.mediaUrlThumb = "//sub-cdn.washingtonpost.com/"+subId+"/"+msId+"/"+$scope.uploader.queue[i].sequenceNumber+"_thumb";}
-                    subMedia.mediaUrl = "//sub-cdn.washingtonpost.com/"+subId+"/"+msId+"/"+$scope.uploader.queue[i].sequenceNumber+subMedia.fileExtentions;
+                    if($scope.mediaset.mediaSetType == 'image'){subMedia.mediaUrlThumb = "//noname.com/"+subId+"/"+msId+"/"+$scope.uploader.queue[i].sequenceNumber+"_thumb";}
+                    subMedia.mediaUrl = "//noname.com/"+subId+"/"+msId+"/"+$scope.uploader.queue[i].sequenceNumber+subMedia.fileExtentions;
                 }
 
                 thisMedia.push(subMedia);
@@ -1864,7 +1864,7 @@ angular.module('pupApp.controllers', ['angularFileUpload', 'uuids', 'ngResource'
             console.info('Complete', xhr, item, response);
             console.log("extensionsList", response.data.extensionsList)
             $scope.fileExtentions = "." + $scope.application.defaultImgFieldExt;
-            subLogService.debug({ message: "File Info", response: response.data}); 
+            subLogService.debug({ message: "File Info", response: response.data});
             if(response.data.extensionsList && response.data.extensionsList[0] != null){
                 $scope.fileExtentions = (response.data.extensionsList[0]);
                 console.log('file ext' + $scope.fileExtentions);
@@ -2522,19 +2522,19 @@ angular.module('pupApp.controllers', ['angularFileUpload', 'uuids', 'ngResource'
         	if(parseInt(attr.mediasetId) > 0 ){
         		mediasetDir = "/" + attr.mediasetId;
         	}
-        	var thumbnail = "//sub-cdn.washingtonpost.com/" + attr.submissionId +mediasetDir + "/0_thumb";
+        	var thumbnail = "//noname.com/" + attr.submissionId +mediasetDir + "/0_thumb";
             // Add a watch on the `focus-input` attribute.
             // Whenever the `focus-input` statement changes this callback function will be executed.
             scope.$watch(attr.photoPreview, function(value){
         		var i = 0
         		var imageHtml = "<br><div class='row' ><ul class='list-unstyled'>";
         		while (i < attr.numOfMedia) {
-				    imageHtml += "<li class='col-md-3'><br><img src='" + "//sub-cdn.washingtonpost.com/" + attr.submissionId + mediasetDir + "/"+i+"_thumb?" + value + "' err-src='/images/no-image-available.png' alt='image'/></li>";
+				    imageHtml += "<li class='col-md-3'><br><img src='" + "//noname.com/" + attr.submissionId + mediasetDir + "/"+i+"_thumb?" + value + "' err-src='/images/no-image-available.png' alt='image'/></li>";
 		            i++;
 				}
 				imageHtml = imageHtml + "</ul></div>";
 
-				$http.get("//sub-cdn.washingtonpost.com/" + attr.submissionId + mediasetDir+ "/0_thumb", {})
+				$http.get("//no-name.com/" + attr.submissionId + mediasetDir+ "/0_thumb", {})
             	.success(function(data, err){
             		scope.isPhotoUploaded = true;
             		var clonedElement = $compile(imageHtml)(scope, function(clonedElement, scope) {
@@ -2567,7 +2567,7 @@ angular.module('pupApp.controllers', ['angularFileUpload', 'uuids', 'ngResource'
 										console.log("mediasetType is " + media[i].mediaSetType);
 										if(media[i].mediaSetType == "image"){
 												scope.isPhotoUploaded = true;
-										}										
+										}
 					        }
 					        var clonedElement = $compile("<ul class='list-unstyled'>"+fileHTML+"</ul>")(scope, function(clonedElement, scope) {
 					    //attach the clone to DOM document at the right place
