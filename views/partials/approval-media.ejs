@@ -1,0 +1,137 @@
+<!--Admin View -->
+<!-- Viewing Media per submission in Approval Tool -->
+
+<!-- Type = Image-->
+<!-- This is for Images -->
+<div bo-if="photo.mediaSetType == 'image'">
+	<div class="pull-left space">
+		<a bo-if="photo.mediaUrl" bo-href="photo.mediaUrl"><img bo-src="photo.mediaUrlThumb"></a>
+		<br>
+		<span bo-bind="photo.originalName | removeExt"></span>
+		<br>
+		<div ng-repeat="ms in app.mediaSets">
+			<div ng-if="ms != null && ms._id==photo.mediaSetId">
+				<div ng-repeat="mediasetField in ms.mediaSetFormFields" bindonce>
+					<media-formfield field="mediasetField" form-data="photo.mediasetFormData"> </media-formfield>
+				</div>
+			</div>
+		</div>
+		<br>
+		<span class="hide-me" ng-hide="compare">
+			<a ng-if="photo.mediaUrl" bo-href="photo.mediaUrl" target="_blank" class="btn btn-link btn-view" >
+				Download
+			</a>
+			<span class="pipette" >|</span>
+			<a ng-click="photo.edit=true;mediaset.edited = true;openImgEditModal(submission._id, photo.sequenceNumber);" class="btn btn-link hidden-print">Edit</a>
+		</span>
+		<!-- START: Edit Image modal-->
+		<div class="modal fade" tabindex="-1" id="imgEditModal_{{submission._id}}_{{photo.sequenceNumber}}">
+			<div class="modal-dialog edit-modal">
+				<div class="modal-content">
+					<div class="modal-body" ng-if="photo.edit">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>						<div class="editBar" ng-show="!cropping && !rotating">
+							<button  type="button" class="btn btn-primary" ng-click="$broadcast('crop','');">Crop</button>
+							<button type="button" class="btn btn-primary" ng-click="$broadcast('rotate','');">Rotate</button>
+							<button type="button" class="btn btn-primary" ng-click="$broadcast('reset','');photo.crop={};photo.rotation=0;">Restore</button>
+						</div>
+						<div class="saveBar" ng-hide="!cropping && !rotating">
+							<button type="button" class="btn btn-primary" ng-click="$broadcast('save','');">Save</button>
+							<button type="button" class="btn btn-primary" ng-click="$broadcast('cancel','');">Cancel</button>
+						</div>	<br>
+						<img  bo-if="!photo.mediaUrl" img-data-from-uri="//noname.com/{{mediaset.uniqueUploadId}}/{{photo.sequenceNumber}}{{photo.fileExtentions}}" img-editable class="img-max-width" crop="photo.crop" rotation="photo.rotation"/ >
+						<img  bo-if="photo.mediaUrl" img-data-from-uri="//noname.com/{{mediaset.uniqueUploadId}}/{{photo.sequenceNumber}}{{photo.fileExtentions}}" img-editable class="img-max-width" crop="photo.crop" rotation="photo.rotation"/ >
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+						<button type="button" class="btn btn-primary" ng-click="saveImgEdit(submission, mediaset, photo);">Save Changes</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- END: Edit Image modal-->
+	</div>
+</div>
+<!-- END Type = Image-->
+
+<!-- Type = Document -->
+<!-- This is for Documents -->
+<div bo-if="photo.mediaSetType == 'document'">
+	<div class="pull-left space">
+		<a bo-if="photo.mediaUrl" bo-href="photo.mediaUrl" class="btn btn-link btn-view">
+			<div bo-if="photo.fileExtentions == '.pdf'">
+				<i class="fa fa-file-pdf-o extension"></i>
+			</div>
+			<div bo-if="photo.fileExtentions == '.doc' || photo.fileExtentions == '.docx'">
+				<i class="fa fa-file-word-o extension"></i>
+			</div>
+			<div bo-if="photo.fileExtentions == '.xls' || photo.fileExtentions == '.xlsx'">
+				<i class="fa fa-file-excel-o extension"></i>
+			</div>
+			<div bo-if="photo.fileExtentions == '.ppt' || photo.fileExtentions == '.pptx'">
+				<i class="fa fa-file-powerpoint-o extension"></i>
+			</div>
+
+			<div bo-if="photo.fileExtentions == '.txt' || photo.fileExtentions == '.csv' || photo.fileExtentions == '.rtf'">
+				<i class="fa fa-file-text-o extension"></i>
+			</div>
+			<div bo-if="!photo.fileExtentions">
+				<i class="fa fa-file-text-o extension"></i>
+			</div>
+		</a>
+		<span bo-text="photo.originalName"></span>
+		<div ng-repeat="mediasetField in app.mediaSets[index].mediaSetFormFields"  bindonce>
+			<media-formfield field=mediasetField form-data=photo.mediasetFormData> </media-formfield>
+		</div>
+		<br>
+		<a class="btn btn-link btn-view" ng-click="documentViewModal(photo, submission._id, photo.sequenceNumber)" href="#" ng-hide="compare || photo.fileExtentions == '.csv'|| photo.fileExtentions == '.txt'|| photo.fileExtentions == '.rtf'|| photo.fileExtentions == '' || photo.fileExtentions == '.xml'||photo.fileExtentions=='.pdf'">View</a>
+		<span class="pipette" ng-hide="compare || photo.fileExtentions == '.csv'|| photo.fileExtentions == '.txt'|| photo.fileExtentions == '.rtf'|| photo.fileExtentions == ''|| photo.fileExtentions == '.xml'||photo.fileExtentions=='.pdf'">|</span>
+		<a bo-if="photo.mediaUrl" bo-href="photo.mediaUrl" target="_blank" class="btn btn-link hidden-print hide-me" > Download </a>
+	</div>
+</div>
+<!-- END Type = Document -->
+
+<!-- Type = Video -->
+<!-- This is for Video -->
+<div bo-if="photo.mediaSetType == 'video'">
+	<div class="pull-left space">
+		<video width="400" controls ng-hide="photo.fileExtentions == '.mp4'">
+		  <source  ng-src="{{photo.mediaUrl | audioUrl}}" >
+		  Your browser does not support HTML5 video.
+		</video><br>
+		<a bo-if="photo.mediaUrl" bo-href="photo.mediaUrl" class="btn btn-link btn-view">
+			<i class="fa fa-file-video-o extension"></i>
+			<br>
+		</a>
+		<br>
+		<span bo-text="photo.originalName"></span>
+		<br>
+		<!-- Duration: {{photo.duration}} <br> -->
+		<div ng-repeat="mediasetField in app.mediaSets[index].mediaSetFormFields" bindonce>
+			<media-formfield field=mediasetField form-data=photo.mediasetFormData> </media-formfield>
+		</div>
+		<a bo-if="photo.mediaUrl" bo-href="photo.mediaUrl" target="_blank" class="btn btn-link btn-view  hidden-print hide-me" >Download </a>
+	</div>
+</div>
+<!-- END Type = Video -->
+
+<!-- Type = Audio -->
+<!-- This is for Audio -->
+<div bo-if="photo.mediaSetType == 'audio'">
+	<div class="pull-left space">
+		<audio controls>
+		  <source ng-src="{{photo.mediaUrl | audioUrl}}" >
+		Your browser does not support the audio element.
+		</audio><br>
+		<a bo-if="photo.mediaUrl" bo-href="photo.mediaUrl" class="btn btn-link btn-view">
+			<i class="fa fa-file-audio-o extension"></i>
+			<br>
+		</a>
+		<span bo-text="photo.originalName"></span>
+		<br>
+		<div ng-repeat="mediasetField in app.mediaSets[index].mediaSetFormFields" bindonce>
+			<media-formfield field=mediasetField form-data=photo.mediasetFormData> </media-formfield>
+		</div>
+		<a bo-if="photo.mediaUrl" bo-href="photo.mediaUrl" target="_blank" class="btn btn-link btn-view  hidden-print hide-me" >Download </a>
+	</div>
+</div>
+<!-- END Type = Audio-->

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<!-- The Profile View-->
+<!-- Path: /profile-->
+<html ng-app="profile">
+<!-- views/profile.ejs -->
+<head>
+    <title><%= user.customerName %>'s Profile</title>
+    <% include partials/css.ejs %>
+</head>
+
+<body ng-controller="SettingsCtrl"  ng-cloak class="skin-blue">
+        <% include partials/nav-new.ejs %>
+
+        <div class="wrapper row-offcanvas row-offcanvas-left" ng-controller="AppCtrl">
+        <div ng-init="initErrorMessages('<%= errorMessage %>','<%= successMessage %>');page='profile'"></div>
+        <div ng-init="init('<%= user._id %>','<%= user.account.acctId %>','<%= user.account.role %>','<%= account.type %>', '<%= user.isLDAP%>')"></div>
+            <% include partials/nav-left.ejs %>
+            <!-- Right side column. Contains the navbar and content of the page -->
+            <aside class="right-side">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>
+                        Profile                        
+                    </h1>
+                    <ol class="breadcrumb">
+                        <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+                        <li class="active">Profile</li>
+                    </ol>
+                </section>
+
+                <!-- Main content -->
+                <section class="content">
+                    <!-- PLATFORM INFORMATION -->
+            <div class="row">                
+                <div class="col-md-6">
+                    <!--USER LOCAL INFORMATION -->
+                    <div class="box box-solid box-primary user text-left">
+                      <div class="box-header">
+                        <h3 class="box-title"><span class="fa fa-user"></span> Your Info</h3>
+                      </div>
+                    <ul class="list-group">
+                        <li class="list-group-item"><strong>Name</strong>: <%= user.customerName %><br></li>
+                        <!-- <li class="list-group-item"><strong>Account Status</strong>: <%= user.status %><br></li> -->
+                        <li class="list-group-item"><strong>User Name</strong>: <%= user.userName %><br></li>
+                        <li class="list-group-item" ng-hide="isLDAP"><strong>Password</strong>: <a class="profile-link color-link" href="/changePass">Change Password</a><br></li>
+                        <li class="list-group-item"><strong>E-mail Address</strong>: <%= user.emailAddress %><br></li>
+                        <li class="list-group-item"><strong>Customer ID</strong>: <span style="word-wrap:break-word;"><%= user._id %></span><br></li>
+                        <li class="list-group-item"><a href="/logout" class="profile-link color-link">Sign Out</a></li>
+                        <!-- <li class="list-group-item"><strong>Account Creation</strong>: <%= user.creationDate %><br></li> -->
+                      </ul>
+                    </div>
+                    </div>
+                    <div class="col-md-6">
+                    <div class="box box-solid box-primary user text-left" >
+                      <div class="box-header">
+                        <h3 class="box-title"><span class="fa fa-user"></span> Account Info</h3>
+                      </div>
+                    <ul class="list-group">
+
+                        <li class="list-group-item" ng-show="accountSettings.userManagement"><strong>Name</strong>: <%= account.name %><br></li>
+
+                        <li class="list-group-item"><strong>Type</strong>: <%= account.type %><br>
+<!--                            <a ng-show=class="profile-link" href="/updateAccount">edit</a> 
+ -->                            
+                        </li>
+
+                        <li class="list-group-item" ><strong>Status</strong>: <%= account.status %><br></li>                                            
+                        <li class="list-group-item"><strong>Account ID</strong>: <%= account._id %><br></li>
+                        <li class="list-group-item" ng-show="accountSettings.userManagement && (customerRole == 'admin' || customerRole == 'superadmin')"><!--<a class="profile-link" href="#" data-toggle="modal" data-target="#userManagementModal">Add a user</a><br>--><a class="profile-link color-link" href="/userManagement" >Manage Users</a> | <a href="/accountManagement">Manage Categories</a><br></li>
+                        <!-- <li class="list-group-item"><strong>Account Creation</strong>: <%= user.creationDate %><br></li> -->
+
+                    </ul>
+                    </div>
+                    
+                </div>
+            </div> 
+            <% include partials/add-user-modal.ejs %>
+
+                </section><!-- /.content -->
+            </aside><!-- /.right-side -->
+        </div>
+                      
+<% include partials/javascripts.ejs %>
+</body>
+</html>

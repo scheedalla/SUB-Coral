@@ -1,0 +1,104 @@
+<!-- Admin View -->
+<!-- General Form Settings in Create Form -->
+
+<div class="panel panel-default" ng-init="init('<%= user._id %>','<%= user.account.acctId %>','<%= user.account.role %>','<%= account.type %>')">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><a href="#" ng-click="advFormSettings.isCollapsed=!advFormSettings.isCollapsed"><div class="row"><div class="col-xs-11">Advanced Form Settings</div><div class="col-xs-1"> <span class="fa fa-chevron-down"></span></div></div></a></h3>
+                    </div>
+
+                    <div class="panel-body" ng-hide="advFormSettings.isCollapsed">                    
+                                                                                                            
+                        <div class="row">   
+                            <div class="col-md-2">                                
+                                        <label>Link to Privacy Policy (Hosted Form only) <a href="#" tooltip-placement="right" tooltip="{{tooltips.policy}}" tabindex="-1"><i class="fa fa-info-circle"></i></a> <span class="optional-text">(Optional)</span></label>                                                                        
+                            </div>                         
+                            <div class="col-md-10">
+                                                                    
+                                        <input type="text" class="form-control" ng-model="newSchema.policyURL" /><br><span ng-show="policyError" class="text-danger"><em>{{policyErrorText}}</em></span>
+                               
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                
+                                    <label>Link to Terms of Service (Hosted Form only) <a href="#" tooltip-placement="right" tooltip="{{tooltips.tos}}" tabindex="-1"><i class="fa fa-info-circle"></i></a> <span class="optional-text">(Optional)</span></label>                                    
+                                
+                            </div>
+                            <div class="col-md-10">
+                                                                  
+                                    <input type="text" class="form-control" ng-model="newSchema.tosURL" /><br><span ng-show="tosError" class="text-danger"><em>{{tosErrorText}}</em></span>
+                                
+                            </div>
+                        </div>
+                        <div class="row">                            
+                            <div class="col-md-3">
+                                <label>Form Visibility<span class="sub_reqText">*</span> <a href="#" tooltip-placement="right" tooltip="{{tooltips.shared}}" tabindex="-1"><i class="fa fa-info-circle"></i></a></label>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio"  ng-model="newSchema.shared" ng-value="true">
+                                        Everyone in my account can see
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio"  ng-model="newSchema.shared" ng-value="false">
+                                        Only I can see
+                                    </label>
+                                </div>  
+                            </div>                        
+                            <div class="col-md-3">
+                                <label>Require All Fields<span class="sub_reqText">*</span> <a href="#" tooltip-placement="right" tooltip="{{tooltips.required}}" tabindex="-1"><i class="fa fa-info-circle"></i></a></label>
+
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio"  ng-model="newSchema.requireAll" ng-value="true" ng-click="requireAll()">
+                                        On
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio"  ng-model="newSchema.requireAll" ng-value="false" ng-click="requireAllUndo()">
+                                        Off
+                                    </label>
+                                </div>  
+                            </div>
+                            <div class="col-md-3" ng-show="newSchema.mediaSets.length>0">
+                                <label>Default Image Field Extension (Beta) <span class="optional-text">(Optional)</span></label>
+
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio"  ng-model="newSchema.defaultImgFieldExt" value="png" ng-click="">
+                                        png
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio"  ng-model="newSchema.defaultImgFieldExt" value="jpg" ng-click="">
+                                        jpg
+                                    </label>
+                                </div>  
+                            </div>                        
+                            <div class="col-md-3">
+                                <label>Submission Limit</label>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio"  ng-model="newSchema.submissionLimit" ng-value="true" ng-click="">
+                                        Yes
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio"  ng-model="newSchema.submissionLimit" ng-value="false" ng-click="">
+                                        No
+                                    </label>
+                                </div>
+                                <div class="form-group"  ng-show="newSchema.submissionLimit">
+                                     <label>Submission Limit Amount</label>
+                                    <input type="number" class="form-control" placeholder="Example: 2" ng-value="1" min="1" ng-model="newSchema.submissionLimitAmount">
+                                </div>
+
+                            </div>                            
+                        </div>
+
+                    </div>
+                </div>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<!-- When a user imports a form from Google or WuFoo-->
+<!-- Path: /import-->
+<html ng-app="import">
+<!-- views/profile.ejs -->
+<head>
+  <title>Import Form</title>
+  <% include partials/css.ejs %>
+</head>
+
+<body ng-controller="ImportCtrl"  ng-cloak class="skin-blue">
+  <% include partials/nav-new.ejs %>
+
+  <div class="wrapper row-offcanvas row-offcanvas-left">
+   <div ng-init="init('<%= user._id %>','<%= user.account.acctId %>','<%= user.account.role %>','<%= account.type %>');page='import'"></div>
+   <% include partials/nav-left.ejs %>
+   <!-- Right side column. Contains the navbar and content of the page -->
+   <aside class="right-side">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        Import from Wufoo or Google Forms                  
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>        
+        <li class="active">Import Form</li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <div class="col-md-12" ng-hide="appId">
+         <div>
+         <ol style="font-size:larger;">
+						<li>Export your responses as a CSV (Comma separate values - file type extension is '.csv').
+								<ul> 
+									<li>Wufoo <a class="color-link" href="http://www.wufoo.com/guides/quick-tip-how-to-export-all-your-data-from-a-form/" target="_blank">(How to Export All Your Data From a Form <i class="fa fa-external-link"></i>)</a></li>
+									<li>Google Forms (View responses as spreadsheet -> File -> Download as -> Comma-separated values)</a>.</li>
+								</ul>
+							</li> 
+							<li>Upload the CSV here and follow the instructions.</li>
+						</ol>
+						<form ng-submit="uploadFile()" name="importForm" novalidate>
+							<div class="form-group">
+								<label>Where did you export this CSV from?<span  class="sub_reqText">*</span></label>
+								<div class="radio">
+									<label>
+										<input type="radio" name="importSource" ng-model="importSource" value="google" ng-required="!importSource"> Google Forms 
+									</label>
+								</div>
+								<div class="radio">
+									<label>
+										<input type="radio" name="importSource" ng-model="importSource" value="wufoo" ng-required="!importSource"> Wufoo
+									</label>
+								</div>
+							</div>
+							<div class="form-group">								 
+								<span class="btn btn-default btn-file">Upload File<input type="file" ng-file-select/></span> {{fileName}}<br><span ng-show="csvError" class="text-danger"><em>{{csvErrorText}}</em></span>
+							</div>
+							<div class="form-group">						
+								<button class="btn btn-large btn-primary" type="submit" ng-disabled="importForm.importSource.$invalid || !fileIsUploaded">Import</button> 
+							</div>
+						</form>	
+         </div>
+         <csv-url id="csv-url" csv-uploaded="csvUploaded" value=""/>
+       </div>  
+       <div class="col-md-12" ng-hide="!appId">
+					<h3>Review and edit imported form</h3>
+		</div>
+				<div ng-controller="SettingsCtrl">
+					<div ng-controller="AppCtrl" >
+						
+						<div ng-include src="editUrl"></div>
+					</div>
+				</div>           
+     </div> 
+
+   </section><!-- /.content -->
+ </aside><!-- /.right-side -->
+</div>
+
+
+
+<% include partials/javascripts.ejs %>
+<script src="/javascripts/applications/ImportApp.js"></script>
+<script src="/javascripts/controllers/ImportControllers.js"></script> 
+<script src="/javascripts/factories/UuidFactories.js"></script>
+<script src="/javascripts/factories/subServices.js"></script>
+
+<script>	
+	function endUserCallBack(obj, subId, mediaset, docUrl) {  		
+		$("#csv-url").val(docUrl);
+	} 
+</script>​
+</body>
+</html>

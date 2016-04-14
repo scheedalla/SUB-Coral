@@ -1,0 +1,30 @@
+<!-- Admin View -->
+<!-- Modal for Edit Image -->
+
+<!-- Start Modal Template -->
+<script type="text/ng-template" id="imgEdit.html">
+<div tabindex="-1" id="imgEditModal_{{modalOptions.photo}}_{{modalOptions.mediaSet}}">
+	<div class="modal-header">
+	    <button type="button" class="close" data-ng-click="modalOptions.close()" aria-hidden="true">Close</button>
+  		<h3>{{modalOptions.headerText}}</h3>
+  		<div class="editBar" ng-show="!cropping && !rotating">
+			<button  type="button" class="btn btn-primary" ng-click="$broadcast('crop','');">Crop</button>
+			<button type="button" class="btn btn-primary" ng-click="$broadcast('rotate','');">Rotate</button>
+			<button type="button" class="btn btn-primary" ng-click="$broadcast('reset','');photo.crop={};photo.rotation=0;">Restore</button>
+		</div>
+	</div>
+	<div class="modal-body">
+		<div class="saveBar" ng-hide="!cropping && !rotating">
+			<button type="button" class="btn btn-primary" ng-click="$broadcast('save','');">Save</button>
+			<button type="button" class="btn btn-primary" ng-click="$broadcast('cancel','');">Cancel</button>
+
+		</div>	<br>
+		<img img-data-from-uri="//noname.com/{{modalOptions.mediaset.uniqueUploadId}}/{{modalOptions.photo.sequenceNumber}}{{modalOptions.photo.fileExtentions}}" img-editable class="img-max-width" crop="photo.crop" rotation="photo.rotation"/ >
+	</div>
+	<div class="modal-footer">
+	  <button class="btn btn-primary" data-ng-click="modalOptions.ok();">{{modalOptions.closeButtonText}}</button>
+	  <input type="button" class="btn btn-primary" value="{{modalOptions.actionButtonText}}" ng-click="saveSearch(false); saveImgEdit(modalOptions.submission, approvalApp, modalOptions.photo.mediaSetId, modalOptions.mediaset.uniqueUploadId);" />
+	</div>
+</div>
+</script>
+<!-- End Modal Template -->

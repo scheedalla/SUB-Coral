@@ -1,0 +1,228 @@
+/* This is the main stylesheet for the Media Uploader aka PUP */
+html, body {min-height:0 !important;background-color: white !important;}
+body{background-color: white !important;}
+.my-drop-zone { border: dotted 3px lightgray; color:gray;}
+.ng-file-over { border: dotted 3px red; } /* Default class applied to drop zones on over */
+.another-file-over-class { border: dotted 3px green; }
+
+
+.img-thumb{
+	max-height:100px;max-width:200px;
+}
+
+.img-margin{
+	margin:5px;
+}
+
+.glyphicon-pic-size{
+	font-size:115px;
+}
+
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 999px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
+
+.word-wrap{
+    word-wrap:break-word;
+}
+
+.img-max-width{
+    max-width:100%;
+    
+    
+}
+
+/*bootstrap css for error validation*/
+
+.ng-invalid.ng-dirty.radio,
+.ng-invalid.ng-dirty.checkbox{
+  color: #a94442;
+} 
+.ng-invalid.ng-dirty.form-control {
+  border-color: #a94442;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+}
+.ng-invalid.ng-dirty.form-control:focus {
+  border-color: #843534;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #ce8483;
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #ce8483;
+}
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+
+.white-space-normal{
+  white-space: normal;
+  }
+
+
+/*loading css - See more at: http://cssload.net/#sthash.vwuiVny0.dpuf */
+.loading{
+	position: absolute;
+	height: 300px;
+	top: 40%;
+	left: 50%;
+	line-height: 300px;
+	text-align: center;
+	clear: both;
+}
+
+.containerLoading{
+	opacity: 0.1;
+	filter: alpha(opacity=10);
+
+}
+
+#circleG{
+width:149.33333333333334px;
+}
+
+.circleG{
+background-color:#FFFFFF;
+float:left;
+height:32px;
+margin-left:17px;
+width:32px;
+-moz-animation-name:bounce_circleG;
+-moz-animation-duration:1.9500000000000002s;
+-moz-animation-iteration-count:infinite;
+-moz-animation-direction:linear;
+-moz-border-radius:21px;
+-webkit-animation-name:bounce_circleG;
+-webkit-animation-duration:1.9500000000000002s;
+-webkit-animation-iteration-count:infinite;
+-webkit-animation-direction:linear;
+-webkit-border-radius:21px;
+-ms-animation-name:bounce_circleG;
+-ms-animation-duration:1.9500000000000002s;
+-ms-animation-iteration-count:infinite;
+-ms-animation-direction:linear;
+-ms-border-radius:21px;
+-o-animation-name:bounce_circleG;
+-o-animation-duration:1.9500000000000002s;
+-o-animation-iteration-count:infinite;
+-o-animation-direction:linear;
+-o-border-radius:21px;
+animation-name:bounce_circleG;
+animation-duration:1.9500000000000002s;
+animation-iteration-count:infinite;
+animation-direction:linear;
+border-radius:21px;
+}
+
+#circleG_1{
+-moz-animation-delay:0.39s;
+-webkit-animation-delay:0.39s;
+-ms-animation-delay:0.39s;
+-o-animation-delay:0.39s;
+animation-delay:0.39s;
+}
+
+#circleG_2{
+-moz-animation-delay:0.9099999999999999s;
+-webkit-animation-delay:0.9099999999999999s;
+-ms-animation-delay:0.9099999999999999s;
+-o-animation-delay:0.9099999999999999s;
+animation-delay:0.9099999999999999s;
+}
+
+#circleG_3{
+-moz-animation-delay:1.1700000000000002s;
+-webkit-animation-delay:1.1700000000000002s;
+-ms-animation-delay:1.1700000000000002s;
+-o-animation-delay:1.1700000000000002s;
+animation-delay:1.1700000000000002s;
+}
+
+@-moz-keyframes bounce_circleG{
+0%{
+}
+
+50%{
+background-color:#000000}
+
+100%{
+}
+
+}
+
+@-webkit-keyframes bounce_circleG{
+0%{
+}
+
+50%{
+background-color:#000000}
+
+100%{
+}
+
+}
+
+@-ms-keyframes bounce_circleG{
+0%{
+}
+
+50%{
+background-color:#000000}
+
+100%{
+}
+
+}
+
+@-o-keyframes bounce_circleG{
+0%{
+}
+
+50%{
+background-color:#000000}
+
+100%{
+}
+
+}
+
+@keyframes bounce_circleG{
+0%{
+}
+
+50%{
+background-color:#000000}
+
+100%{
+}
+
+} 
+
+
+@media screen and (max-width: 320px) {
+
+  .btn-done{
+     float: none !important; 
+     margin-top: 5px; 
+  }
+
+}
+
+.sub_reqText {
+color: red;
+}
+

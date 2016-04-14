@@ -1,0 +1,56 @@
+<!-- Admin View -->
+<!-- Show Form Options for Admin after Create Form -->
+
+<p>
+    <span style="font-size:larger;"><strong>Choose from <em>ONE</em> of the ways</strong></span> below to put your form on your site:
+</p>
+<!-- Option 1 -->
+<h2>1. Share a Permanent Link To Your Form</h2>
+<p>Share the link below and we'll host your form for you!  Don't worry: You'll still receive all results as if the form existed on your own web site.  Recommended for novice developers.</p>
+
+<p>Full URL:
+    <span ng-show="app._id"><a href="//{{thisDomain}}/hosted/{{app._id}}" target="_blank" class="btn btn-link url-break-word">https://{{thisDomain}}/hosted/{{app._id}}</a></span>
+</p>
+
+<div class="row">
+<div class="col-md-6">
+    <p ng-show="newSchema.tinyUrl || app.tinyUrl">
+
+        Short URL:
+        <span ng-show="app.tinyUrl" ng-hide="bitly.editBitly"><a href="{{app.tinyUrl}}" target="_blank" class="btn btn-link url-break-word">{{app.tinyUrl}}</a></span>
+
+
+        <div ng-show="bitly.editBitly" class="input-group">
+            <span class="input-group-addon">http://subpl.at/</span>
+            <input type="text" class="form-control" ng-model="bitly.customKeyWord" />
+            <span class="input-group-btn"><button ng-click="changeBitly()" class="btn btn-primary btn-submit">Change</button></span>
+            <span class="input-group-btn"><button ng-click="bitly.editBitly=false" class="btn btn-submit">Cancel</button></span>
+        </div>
+
+        <span ng-show="app.tinyUrl && !bitly.editBitly && bitly.isBitly"><a href="#" ng-click="bitly.editBitly=true" >Customize Short URL</a></span>
+        <!-- <span ng-show="bitly.editBitly"><a href="#" ng-click="bitly.editBitly=false" >Cancel</a></span> -->
+
+    </p>
+</div>
+<div class="col-md-6">
+    <div class="alert alert-success alert-dismissable" ng-show="bitly.success" role="alert">
+        <i class="fa fa-check"></i>
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        {{bitly.success}}
+    </div>
+    <div class="alert alert-danger alert-dismissable" ng-show="bitly.error" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        {{bitly.error}}</div>
+</div>
+</div>
+
+<!-- Option 4 -->
+<h2>2. Embed Your Form on a web page</h2>
+<p>Embed your new form on your web site using the code below. The page MUST include jQuery. You can embed your form on any html compatible page.  You can also paste this code into a WYSIWYG editor.</p>
+<p>NOTE: <strong>The page MUST include at least jQuery 1.9.0, be on an SSL (https supported) page, and the embedded form will not work with IE 9 and below.</strong></p>
+
+<pre class="snippet">
+    <code class="html snippet">
+        &lt;script src="https://code.jquery.com/jquery-1.11.3.min.js">&lt;/script>&lt;link href="{{embedCssRef}}" rel="stylesheet" type="text/css"><span ng-show="app._id">&lt;div class="sub"></span>&lt;form id="form_{{app._id}}" role="form" action="" novalidate>&lt;/form>&lt;/div>&lt;script>$(function(){SubmissionPlatform.services.displayForm("{{app._id}}", "{{embedEnvVar}}");});&lt;/script><span ng-show="app.hasCaptcha">&lt;script src="https://www.google.com/recaptcha/api.js?onload=subCaptchaCallback&render=explicit">&lt;/script></span>&lt;script src="//{{thisDomain}}/javascripts/embed/0.0.5/embed.min.js">&lt;/script>
+    </code>
+</pre>

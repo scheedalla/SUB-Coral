@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<!-- If user login results an error, they will see this page. -->
+<!-- Path: /login-->
+<html ng-app="profile">
+<head>
+    <title>Sign in</title>
+    <% include partials/css.ejs %>
+</head>
+<body ng-controller="SettingsCtrl" class="login" ng-cloak>
+<div class="alert alert-danger text-center" ng-hide="goRegister || hideErrorMsg">
+               Invalid username or password. Please try again.
+</div>
+
+  <% include partials/login-and-register-forms.ejs %>
+  <% include partials/javascripts.ejs %>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!-- Admin View -->
+<!-- Modal for Compare Submissions -->
+
+<!-- Start Modal Template -->
+<script type="text/ng-template" id="compare.html">
+<div class="modal-header">
+  <button type="button" class="close" data-ng-click="modalOptions.close()" aria-hidden="true">Close</button>
+  <h3>{{modalOptions.headerText}}</h3>
+</div>
+<div class="modal-body">
+				<div class="row">
+					<div class="submission col-sm-6" ng-repeat="submission in subs| filter:comparedSubFilter">
+						<div class="col-sm-12">
+							<nav class="navbar navbar-default col-sm-12 clearfix" role="navigation">
+								<div class="container-fluid clearfix compare">
+								{{$index + 1}}. 
+									<button type="button" class="close" ng-click="compareSubmissions(submission._id, true)" aria-hidden="true">X</button>
+								</div>
+							</nav>
+							<div>
+
+								<!-- Fields -->
+								<div class="row">
+									<div class="col-sm-12">
+										<label class="question">Submission ID - </label> {{submission._id}}
+									</div>	
+								</div>
+
+								<div class="row">	
+									<div class="col-sm-12">
+										<label class="question">Created - </label> {{submission.createdDate | date:'short'}}<!--{{submission._id | creationDate | date:'MM/dd/yyyy'}}-->
+									</div>
+								</div>
+								<div class="row" ng-repeat="field in app.appFormFields" bindonce>
+									<div class="col-sm-12">
+										<editable-formfield form-id="application._id" content="field" model="submission.formData[field.uniqueId]" submission="submission"> </editable-formfield>
+									</div>
+								</div>
+								<!-- END Fields -->
+							</div>
+						</div>
+					</div>
+					<!-- End Submission Data -->
+				</div>
+			</div>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-primary" 
+          data-ng-click="modalOptions.ok();">{{modalOptions.actionButtonText}}</button>
+</div>
+</script>
+<!-- End Modal Template -->

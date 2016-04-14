@@ -1,0 +1,149 @@
+<!-- Admin View -->
+<!-- Email settings in Create Form -->
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title"><a href="#" ng-click="emailSettings.isCollapsed=!emailSettings.isCollapsed"><div class="row"><div class="col-xs-11">Email Notification Settings</div><div class="col-xs-1"> <span class="fa fa-chevron-down"></span></div></div></a></h3>
+    </div>
+    <div class="panel-body"  ng-hide="emailSettings.isCollapsed">
+        <div class="row">
+            <div class="col-md-3">
+                <label>Admin Email Notification<span class="sub_reqText">*</span> <a href="#" tooltip-placement="right" tooltip="{{tooltips.notifications}}" tabindex="-1"><i class="fa fa-info-circle"></i></a></label>
+                <div class="radio">
+                    <label>
+                        <input type="radio"  ng-model="newSchema.submissionNotifications" ng-value="true" ng-click="newSchema.submissionNotificationShowResponse=true;newSchema.submissionNotificationShowLink=true;">
+                        On
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio"  ng-model="newSchema.submissionNotifications" ng-value="false">
+                        Off
+                    </label>
+                </div>  
+
+            </div> 
+            <div class="col-md-9" ng-show="newSchema.submissionNotifications">
+                <div class="row">
+                    <div class="col-md-12">
+
+                     <label>Subject Line <span class="optional-text">(Optional) <a href="#" tooltip-placement="right" tooltip="{{tooltips.customSubjLine}}"> Want a custom subject line?</a></span></label>                    
+
+                     <input mentio type="text" class="form-control" ng-model="newSchema.submissionNotificationSubjectLine" placeholder="Default: New Submission for {{newSchema.appName}}" mentio-id="'mentioSubjLine'"/>
+                     <mentio-menu
+                                mentio-for="'mentioSubjLine'"
+                                mentio-trigger-char="'@'"
+                                mentio-items="mentioFields"
+                                mentio-template-url="/field-mentions.tpl"
+                                mentio-search="searchMentioFields(term)"
+                                mentio-select="getMentioFieldName(item)"></mentio-menu>
+
+
+                    <script type="text/ng-template" id="/field-mentions.tpl">
+                        <ul class="list-group user-search">
+                            <li mentio-menu-item="field" ng-repeat="field in items" class="list-group-item">
+                                <span class="text-primary" ng-bind-html="field.fieldName | mentioHighlight:typedTerm:'menu-highlighted' | unsafe"></span>
+                                <em class="text-muted" ng-bind="field.uniqueId"></em>
+                            </li>
+                        </ul>
+                    </script>
+
+                    </div>
+                </div>
+                 <div class="row">
+                    <div class="col-md-12">
+                     <label>Email to <span class="optional-text">(Optional)<a href="#"> Separate multiple email addresses with commas</a></span></span></label>
+
+                     <input type="text" class="form-control" ng-model="newSchema.submissionNotificationEmailTo" placeholder="Default: <%= user.emailAddress %>"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>Message <a href="#" tooltip-placement="right" tooltip="{{tooltips.endUserNotificationMessage}}" tabindex="-1"><i class="fa fa-info-circle"></i></a> <span class="optional-text">(Optional)</span></label><textarea class="form-control" ng-model="newSchema.submissionNotificationMessage"></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">                        
+                        <div class="checkbox"><label><input type="checkbox" ng-model="newSchema.submissionNotificationShowLink">Show SUB Admin Link <a href="#" tooltip-placement="right" tooltip="Display the SUB Admin link in the admin email." tabindex="-1"><i class="fa fa-info-circle"></i></a> <span class="optional-text">(Optional)</span></label></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">                        
+                        <div class="checkbox"><label><input type="checkbox" ng-model="newSchema.submissionNotificationShowResponse">Show End User's Response <a href="#" tooltip-placement="right" tooltip="Display the end user's response in the admin email." tabindex="-1"><i class="fa fa-info-circle"></i></a> <span class="optional-text">(Optional)</span></label></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>Set Reply To<span class="optional-text">(Optional)</span> <a href="#" tooltip-placement="right" tooltip="{{tooltips.replyto}}" tabindex="-1"><i class="fa fa-info-circle"></i></a></label>
+
+                        <div ng-click="updateReplyToOptions()">
+                        <select
+                            multiple
+                            ng-model="newSchema.replyTo"
+                            ng-options="value.uniqueId as value.fieldName for value in replyToOptions"
+                            reply-to
+                            chosen
+                            data-placeholder="Default: None"
+                            class="form-control" width="'100%'">
+                        </select>
+                        </div>                        
+                        
+                    </div>
+                </div>                
+            </div>                        
+        </div>
+        <br><br>
+        <div class="row" ng-show="replyToOptions.length==0">
+            <div class="col-md-12">
+                <h4>If you would like end user email notification, please add an email field to your form.</h4>
+            </div>
+        </div>
+        <div class="row"  ng-show="replyToOptions.length>0">
+            <div class="col-md-3">
+                <label>End User Email Notification <a href="#" tooltip-placement="right" tooltip="{{tooltips.endUserNotification}}" tabindex="-1"><i class="fa fa-info-circle"></i></a></label>
+                
+                <div class="radio">
+                                                <label>
+                                                    <input type="radio" ng-model="newSchema.endUserNotification" ng-value="true"> On
+                                                </label>
+                                            </div>
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" ng-model="newSchema.endUserNotification" ng-value="false"> Off
+                                                </label>
+                                            </div>
+                                        
+            </div>
+            <div class="col-md-8" ng-show="newSchema.endUserNotification">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>Email <span class="sub_reqText">*</span> <span class="optional-text">Please select the email field this notification must be sent to </span></label>
+                        <div ng-click="updateReplyToOptions()">
+                        <select
+                            multiple
+                            ng-model="newSchema.endUserNotificationEmail"
+                            ng-options="value.uniqueId as value.fieldName for value in replyToOptions"
+                            reply-to
+                            chosen
+                            data-placeholder="Default: None"
+                            class="form-control" width="'100%'" ng-required="newSchema.endUserNotification">
+                        </select>
+                    </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>Subject Line <span class="optional-text">(Optional) </span></label>
+                        <input type="text" class="form-control" ng-model="newSchema.endUserNotificationSubjectLine" placeholder="Default: Thank you for your submission!"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>Message <a href="#" tooltip-placement="right" tooltip="{{tooltips.endUserNotificationMessage}}" tabindex="-1"><i class="fa fa-info-circle"></i></a> <span class="optional-text">(Optional)</span></label>
+                        <textarea type="text" class="form-control" ng-model="newSchema.endUserNotificationMessage" placeholder=""/></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>  

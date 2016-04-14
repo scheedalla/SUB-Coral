@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<!--Single Submission View, mainly used for Print -->
+<!-- Path: /submission/:subId-->
+<html ng-app="admin">
+<head>
+	<title>Submission</title>
+	<% include partials/css.ejs %>
+	<style>
+	body{
+		padding:0;
+	}
+	</style>
+</head>
+<body ng-controller="SettingsCtrl" ng-cloak>
+	<div loading-indicator ng-show="isLoading || isLoadingHard"></div>
+
+
+	<div class="container" ng-controller="AppCtrl" ng-class="{containerLoading: isLoading || isLoadingHard}">
+		<div ng-init="init('<%= user._id %>','<%= user.account.acctId %>')"></div>
+		<div ng-init="getSubmission('<%= subId %>')"></div>
+		<div class="container-fluid submission">
+			<div class="row">
+				<div class="col-sm-12">
+				<button type="button" ng-click="printMe()" class="btn btn-primary hidden-print">Print</button><br><br>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-sm-12">
+					<label class="question">Submission ID - </label>
+					{{submission._id}}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<label class="question">Created - </label>
+					{{submission.createdDate | date:'MM/dd/yyyy'}}
+				</div>
+			</div>
+			<div ng-init="getApp(submission.appId)"></div>
+			<div class="row" ng-repeat="field in app.appFormFields" bindonce>
+				<div class="col-sm-12">
+					<!-- If user is looking at submission from form they did not create-->
+					<div ng-if="submission.customerId != newSchema.customerId">
+						<label ng-show="field.fieldType == 'sectionHeader'"><strong>{{field.fieldName}}</strong></label>
+						<span ng-hide="field.fieldType == 'mediaSet'||field.fieldType == 'mediaSetDoc'||field.fieldType == 'mediaSetVid'||field.fieldType == 'mediaSetAudio'">
+							<label class="question" ng-hide="field.fieldType == 'sectionHeader'">{{field.fieldName}} - </label>
+							{{submission.formData[field.uniqueId]}}
+						</span>
+					</div>
+
+					<!-- If user is looking at submission from form they did create-->
+					<div ng-if="submission.customerId == newSchema.customerId">
+						<editable-formfield form-id="app._id" content="field" model="submission.formData[field.uniqueId]" submission="submission"> </editable-formfield>
+					</div>
+
+
+				</div>
+
+			</div>
+			<h3 ng-hide="submission.mediasets.length==0">Media Sets</h3>
+
+			<div class="row" ng-repeat="mediaset in submission.mediasets|notNull">
+				<div ng-repeat="photo in mediaset.media" bindonce>
+					<div class="col-sm-12 print">
+						<% include partials/approval-media.ejs %>
+					</div>
+				</div>
+			</div>
+
+
+			<!-- <pre>{{submission.mediasets| json }}</pre> -->
+			<!-- <pre>{{app | json}}</pre> -->
+		</div>
+	</div>
+
+
+	<% include partials/javascripts.ejs %>
+</body>
+</html>

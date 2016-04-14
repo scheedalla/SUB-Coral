@@ -1,0 +1,26 @@
+<!-- Admin View -->
+<!-- Debug Box for Developer Use in DEV and QA -->
+
+<!-- DEBUG BOX-->
+ <div>
+    <button type="button" class="btn btn-default" ng-click="debugBoxOpened=!debugBoxOpened">Open/Close Debug Box (DEV Only; Testers Please Disregard This Button)</button>
+    <div class="panel panel-default" ng-show="debugBoxOpened">
+        <div class="panel-heading">
+            <h3 class="panel-title">Debug Box</h3>
+        </div>
+        <div class="panel-body">
+
+            <button type="button" ng-click="snap()">Snap!</button>
+
+            <h4>For Demo Purposes - PLEASE USE ONLY ON CREATE FORM</h4>                
+            <pre>
+
+                Application:
+                {{newSchema| json}}
+
+                <br><br>
+                FieldTypeOptionsArray:{{fieldTypeOptionsArray | json}}
+            </pre>
+        </div>
+    </div>   
+</div>   

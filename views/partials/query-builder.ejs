@@ -1,0 +1,74 @@
+<!-- Admin View -->
+<!-- Advanced Search Query Builder Template -->
+
+<!-- ADVANCED SEARCH -->
+<script type="text/ng-template" id="/queryBuilderDirective.html">
+    <div class="row">
+        <div class="col-sm-12">
+            All the conditions must be joined by 'AND' or 'OR', they cannot be combined. For example:
+            <ul>
+                <li>If you select 'AND', an example search would be Name = Sarah AND Age = 28 AND occupation = Web Developer. The results would include submissions whose name was Sarah and was 28 years old and a web developer.
+                </li>
+                <li>If you select 'OR', an example search would be Name = Sarah OR Age = 28 OR occupation = Web Developer. The results would include submissions whose name might not be Sarah but who were 28 years old or who were web developers but not 28 years old and so forth.
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2">
+            <strong>Select the conditional operator: </strong>
+        </div>
+        <div class="col-sm-3">
+            <select ng-options="o.name as o.name for o in operators" ng-model="group.operator" class="form-control input-sm"></select>
+        </div>
+    </div>
+    <hr class="adv-hr">
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="row" ng-repeat="rule in group.rules | orderBy:'index'">
+
+                <div ng-switch="rule.hasOwnProperty('group')">
+                    <div ng-switch-when="true">
+                        <query-builder search-field="searchFields" group="rule.group"></query-builder>
+                    </div>
+                    <div ng-switch-default="ng-switch-default">
+                        <div class="col-sm-4">
+
+                            <select ng-options="t.name for t in test  | filter:{ type : '!sectionHeader' } | filter:{ type : '!mediaSet' } | filter:{ type : '!mediaSetDoc' } | filter:{ type : '!mediaSetVid' } | filter:{ type : '!mediaSetAudio' } | filter:{ key : '!approved' } track by t.name" ng-model="rule.field" class="form-control">
+
+                                // <option value="" >--Select your field--</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-2">
+
+                            <select style="margin-left: 5px" ng-options="c.symbol as c.name for c in conditions" ng-model="rule.condition" class="form-control"></select>
+                        </div>
+                        <div class="col-sm-5">
+                            <div ng-show="rule.field.type=='pastDate' || rule.field.type=='futureDate' || rule.field.type=='date'||rule.field.type=='createdDate'">
+                                    <p class="input-group">
+                                        <input type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="rule.data" is-open="minOpen" close-text="Close" >
+                                         <span class="input-group-btn">
+                                        <button type="button" class="btn btn-default" ng-click="$event.preventDefault(); $event.stopPropagation(); minOpen = true;">
+                                            <span class="fa fa-calendar"></span>
+                                        </button>
+                                    </span>
+                                    </p>
+
+
+                                </div>
+                                <div ng-hide="rule.field.type=='pastDate' || rule.field.type=='futureDate' || rule.field.type=='date'||rule.field.type=='createdDate'">
+                                    <input style="margin-left: 5px" type="text" ng-model="rule.data" class="form-control"/>
+                                </div>
+                        </div>
+                        <div class="col-sm-1"><button style="margin-left: 5px" ng-click="removeCondition($index)" class="btn btn-sm btn-danger"><span class="fa fa-minus" tooltip="Click to remove condition" tooltip-placement="left"></span></button><br><br></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <button ng-click="addCondition()" class="btn btn-success"><span class="fa fa-plus"></span> Add Condition</button>
+            <!-- <button style="margin-left: 5px" ng-click="addGroup()" class="btn btn-sm btn-success"><span class="fa fa-plus"></span> Add Group</button> -->
+            <!-- <button style="margin-left: 5px" ng-click="removeGroup()" class="btn btn-sm btn-danger"><span class="fa fa-minus"></span> Remove Group</button> -->
+        </div>
+    </div>
+</script>

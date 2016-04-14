@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<!-- Create and Manage Categories View-->
+<!-- Path: /accountManagement-->
+<html ng-app="profile">
+<!-- views/profile.ejs -->
+<head>
+  <title><%= account.name %> | Manage Categories</title>
+  <% include partials/css.ejs %>
+</head>
+
+<body ng-controller="SettingsCtrl"  ng-cloak class="skin-blue">
+  <% include partials/nav-new.ejs %>
+
+  <div class="wrapper row-offcanvas row-offcanvas-left" ng-controller="AppCtrl">
+   <div ng-init="init('<%= user._id %>','<%= user.account.acctId %>','<%= user.account.role %>','<%= account.type %>');page='categories'"></div>
+   <% include partials/nav-left.ejs %>
+   <!-- Right side column. Contains the navbar and content of the page -->
+   <aside class="right-side">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        Manage Categories                     
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="/profile">Profile</a></li>
+        <li class="active">Manage Categories</li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">    
+        <div class="col-md-12" ng-show="<%= user.account.role == 'user' %>">
+          <!-- Errors -->
+          <div class="box box-solid box-primary">
+            <div class="box-header">
+              <h3 class="box-title">Permission Denied</h3>
+            </div>
+            <ul class="list-group">
+              <li class="list-group-item">You don't have permission to use this feature.<br></li>
+            </ul>
+          </div>
+        </div>        
+        <div class="col-md-12">
+          <!-- Heading -->
+          <div class="box box-solid box-primary" ng-show="<%= user.account.role == 'admin' %> || <%= user.account.role == 'superadmin' %>">                                        
+            <div class="list-group-item">
+              <strong>Set Default Category</strong>
+              <!-- <pre>{{thisCustomer.defaultCategory | json}}</pre> -->
+              <select class="form-control" ng-init="thisCustomer.defaultCategory" ng-model="thisCustomer.defaultCategory" ng-options="category.categoryName for category in account.categories track by category._id|hideOptions:account.categories" ng-change="setDefaultCategory(thisCustomer);">
+                <option value="">--Set Default Category--</option>
+              </select>
+            </div>
+
+
+            <div class="list-group-item">   
+              <form>
+                <div class="input-group">
+                  <input type="text" class="form-control" ng-model="tmpCategoryName" name="category" placeholder="Example: Sports"/><span class="input-group-btn"><button class="btn btn-success" type="button" ng-click="addCategory(tmpCategoryName, account, thisCustomer);tmpCategoryName='';" ng-disabled="!tmpCategoryName"> <i class="fa fa-plus-circle"></i> Add Category</button></span> 
+
+                </div>                         
+                <div class="alert alert-danger" ng-show="categoryError">Whoops! '{{categoryErrorValue}}' already exists as a category.</div>
+              </form>
+            </div>
+            <div class="list-group-item">              
+              <strong>Existing Categories</strong>:<i class="fa fa-icon"></i>
+              <ul>                            
+                <li ng-hide="acctCategory.exclude" ng-repeat="acctCategory in account.categories"> 
+                  <span ng-hide="acctCategory.showEdit || acctCategory.showDelete">{{acctCategory.categoryName}} 
+                    <a href="#" style="font-size:smaller;" ng-click="acctCategory.showEdit=true;acctCategory.tmpName=acctCategory.categoryName">Edit</a>
+                    | <a href="#" style="font-size:smaller;" ng-click="openDeleteCategoryModal(acctCategory._id, account)">Delete</a> 
+                  </span>
+
+                  <div class="input-group" ng-show="acctCategory.showEdit;">
+                    <input type="text" class="form-control" ng-model="acctCategory.categoryName">
+                    <span class="input-group-btn">
+                      <button class="btn btn-success" type="button" ng-click="updateAccount(account);acctCategory.showEdit=false;" ng-disabled="acctCategory.categoryName==''">                             
+                        Edit
+                      </button>
+                      <button class="btn btn-danger" type="button" ng-click="acctCategory.showEdit=false;acctCategory.categoryName=acctCategory.tmpName;">Cancel</button>
+                    </span>
+                  </div>
+
+                  
+
+                  <div class="modal fade" id="deleteCategoryModal_{{acctCategory._id}}">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                          <h4 class="modal-title">Delete Category</h4>
+                        </div>
+                        <div class="modal-body">
+                          <p>This will also delete this category from {{catCount}} forms. <br>Are you sure you want to delete '{{acctCategory.categoryName}}' as a category? </p>
+                        </div>
+                        <div class="modal-footer">
+                          <button class="btn btn-danger" ng-click="deleteCategory($index, account, acctCategory._id, accountApps, thisCustomer)">Yes</button> <button class="btn btn-primary" ng-click="" data-dismiss="modal">No (Cancel)</button>
+                        </div>
+                      </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                  </div><!-- /.modal -->
+
+
+                </li>
+              </ul>
+            </div>    
+          </div>
+        </div>
+      </div> 
+
+    </section><!-- /.content -->
+  </aside><!-- /.right-side -->
+</div>
+
+
+
+<% include partials/javascripts.ejs %>
+</body>
+</html>

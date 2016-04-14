@@ -1,0 +1,81 @@
+<!-- Admin View -->
+<!-- Settings on Create Form for Curation -->
+
+<div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><a href="#" ng-click="curationSettings.isCollapsed=!curationSettings.isCollapsed"><div class="row"><div class="col-xs-11">Admin Curation Settings</div><div class="col-xs-1"> <span class="fa fa-chevron-down"></span></div></div></a></h3>
+            </div>
+            <div class="panel-body" ng-hide="curationSettings.isCollapsed">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group has-feedback">
+                            <label>Tags <a href="#" tooltip-placement="right" tooltip="{{tooltips.tags}}" tabindex="-1"><i class="fa fa-info-circle"></i></a> <span class="optional-text">(Optional)</span></label>                                
+                            <input type="text" class="form-control" ng-model="newSchema.tags" ng-list placeholder="Example: Good, Better, Best"ng-change="validateLabel(formField.fieldName)" ng-change="verifyNewLabel()" />
+                            <span ng-show="formField.fieldName" class="fa fa-check form-control-feedback"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Do You Want an Approval Process? <a href="#" tooltip-placement="right" tooltip="{{tooltips.autoApprove}}" tabindex="-1"><i class="fa fa-info-circle"></i></a> <span class="optional-text">(Optional)</span></label>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" ng-model="newSchema.autoApproved" ng-value="false">
+                                Yes
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" ng-model="newSchema.autoApproved" ng-value="true">
+                                No
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6" ng-show="!newSchema.autoApproved && replyToOptions.length>0">
+                        <label>Do you want an approval notification email? </label>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" ng-model="newSchema.approvalNotification" ng-value="true">
+                                Yes
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" ng-model="newSchema.approvalNotification" ng-value="false">
+                                No
+                            </label>
+                        </div>
+                    </div>
+                    <div ng-show="!newSchema.autoApproved && replyToOptions.length==0">
+                        <div class="col-md-10">
+                            <h4>If you would like end user email notification, please add an email field to your form.</h4>
+                        </div>
+                    </div>
+                    <div class="col-md-12" ng-show="newSchema.approvalNotification">
+                        <label>Approval Email Settings</label>
+                    <div class="col-md-12">
+                        <label>Email <span class="sub_reqText">*</span> <span class="optional-text">Please select the email field this notification must be sent to </span></label>
+                        <div ng-click="updateReplyToOptions()">
+                            <select
+                                multiple
+                                ng-model="newSchema.approvalNotificationEmail"
+                                ng-options="value.uniqueId as value.fieldName for value in replyToOptions"
+                                reply-to
+                                chosen
+                                data-placeholder="Default: None"
+                                class="form-control" width="'100%'" ng-required="newSchema.approvalNotification">
+                            </select>
+                        </div>     
+                    </div>
+                    <div class="col-md-12">
+                        <label>Subject Line <span class="optional-text">(Optional) </span></label>
+                        <input type="text" class="form-control" ng-model="newSchema.approvalNotificationSubjectLine" placeholder="Default: Thank you your submission has been approved!"/>
+                    </div>
+                    <div class="col-md-12">
+                        <label>Message </label>
+                        <textarea class="form-control" ng-model="newSchema.approvalNotificationMessage"></textarea>
+                    </div>
+                </div>
+            </div>         
+        </div>
+    </div>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<!-- If user is not logged in and want to reset their password-->
+<!-- Path: /reset/:token-->
+<html ng-app="profile" class="bg-black">
+<head>
+	<title>Reset Password</title>
+	<% include partials/css.ejs %>	
+</head>
+<body ng-controller="SettingsCtrl" ng-cloak  class="bg-black">
+<div class="form-box" id="login-box"  ng-controller="AppCtrl">
+	<div ng-init="init('<%= user._id %>')"></div>
+	<div ng-init="reset('<%= reset %>')"></div>
+	<div class="header">Reset Password</div>
+	<div class="body bg-gray">
+	<br>
+		<div class="alert alert-danger" ng-show="pass.error" ><i class="fa fa-ban"></i>Error: {{pass.error}} </div>
+					  	<div class="alert alert-success" ng-show="pass.success" ><i class="fa fa-check"></i>Success! Your password has been reset.<br><br><a href="/forms"> Login and view your forms. <i class="fa fa-arrow-right"></i></a></div>
+					  	<form ng-submit="changePass(true)" name="resetschema" novalidate role="form" ng-show="!pass.success">					  		
+					  		<div class="form-group">
+					  		<label class="control-label">New Password* <a href="#" tooltip-placement="right" tooltip="Password must have at least 8 characters"><i class="fa fa-info-circle"></i></a></label>
+		                    <input type="password" class="form-control" match="pass.repeatPass" ng-model="pass.newPass" name="newPass" ng-minlength="8" required/>
+		                    <span class="help-block" ng-show="resetschema.newPass.$dirty && resetschema.newPass.$error.minlength">Password must have at least 8 characters</span>
+		                    </div>
+		                    <div class="form-group">
+							<label class="control-label">Repeat Password*</label>
+		                    <input type="password" class="form-control" match="pass.newPass" ng-model="pass.repeatPass" name="repeatPass" ng-minlength="8" required/>
+		                    <span class="help-block" ng-show="resetschema.repeatPass.$dirty && resetschema.repeatPass.$error.match && !resetschema.repeatPass.$error.required">Passwords don't match</span>
+		                    </div>		                    
+		                    <button class="btn btn-large btn-block bg-olive" type="submit" ng-disabled="resetschema.$invalid">Set Password</button>
+
+					  	</form>
+	</div>
+
+</div>
+
+
+<% include partials/javascripts.ejs %>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<!-- The View that displays all the Forms -->
+<!-- Path: /forms-->
+
+<html ng-app="profile">
+<!-- views/profile.ejs -->
+<head>
+	<title><%= user.customerName %>'s Forms</title>
+	<% include partials/css.ejs %>
+</head>
+<body ng-controller="SettingsCtrl"  ng-cloak class="skin-blue">
+	<% include partials/nav-new.ejs %>
+
+	<div class="wrapper row-offcanvas row-offcanvas-left" ng-controller="AppCtrl">
+   <div ng-init="initErrorMessages('<%= errorMessage %>','<%= successMessage %>');init('<%= user._id %>','<%= user.account.acctId %>','<%= user.account.role %>','<%= account.type %>');page='forms'"></div>
+   <% include partials/nav-left.ejs %>
+   <!-- Right side column. Contains the navbar and content of the page -->
+   <aside class="right-side">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        Forms
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">See Forms</li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content" ng-init="setUserLastActiveDate(user)">
+      <div class="row">
+			<div class="col-md-12">
+				<div class="alert alert-danger" ng-show="errorMessage != 'null'">{{errorMessage}} </div>
+				<div class="alert alert-success" ng-show="successMessage != 'null'">{{successMessage}} </div>
+				<div class="box">
+						<div class="box-body table-responsive">
+						<div class="row">
+							<div class="col-md-3">
+								<div class="row">
+									<div class="col-md-6">
+										<div class="radio">
+									<label>
+										<input type="radio" ng-model="filterOption" ng-value="true">  All Forms
+									</label>
+								</div>
+									</div>
+									<div class="col-md-6">
+										<div class="radio">
+									<label>
+										<input type="radio" ng-model="filterOption" ng-value="false">  My Forms
+									</label>
+								</div>
+									</div>
+								</div>
+							</div>
+								<div class="col-sm-3" style="margin-top:10px;"><span class="fa fa-user"></span> = Indicates your form</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-12">
+
+								<input type="text" class="form-control input-lg" ng-model="queryText.appName" placeholder="Filter forms by name...">
+								</div>
+							</div>
+							<br>
+							<table class="table table-striped table-bordered table-hover">
+								<thead>
+									<tr>
+										<th><span class="fa fa-stack-overflow"></span> Forms by Date <a href="" ng-click="predicate = 'createdDate'; reverse=!reverse"><i class="fa fa-sort"></i></a></th>
+										<th class="text-center">Number of Submissions</th>
+										<!-- <th class="text-center">Categories</th> -->
+										<th class="text-center">Status <a href="" ng-click="predicate = 'active'; reverse=!reverse"><i class="fa fa-sort"></i></a></th>
+										<th class="text-center">Delete</th>
+										<th class="text-center">Duplicate Form <a href="#" tooltip-placement="right" tooltip="This is a premium feature. Please upgrade your account." tabindex="-1" ng-show="accountType == 'Free' && applications.length > 0"><i class="fa fa-info-circle"></i></a></th>
+									</tr>
+								</thead>
+								<tbody>								
+									<tr ng-show="!accountApps.length" class="text-center" ng-hide="accountApps.length==0"><td colspan="6"><img src="/images/ajax-loader.gif" ></td></tr>
+									<tr ng-show="(accountApps| filter:queryText:strict|sharedApps:customerId|myForms:filterOption:customerId).length==0"><td colspan="5"><span>There are no forms.</span></td></tr>
+									<tr ng-show="deletePlat.success"><td colspan="5"><div class="alert alert-success">success: {{deletePlat.success}}</div></td></tr>
+									<tr ng-show="deletePlat.error"><td colspan="5"><div div class="alert alert-danger">error: {{deletePlat.error}}</div></td></tr>
+									<tr ng-repeat="application in accountApps|filter:queryText:strict|orderBy:predicate:reverse|sharedApps:customerId" ng-hide="!filterOption && customerId != application.customerId" bindonce>
+
+										<div class="alert alert-success" ng-show="application.deleted.success">success: {{application.deleted.success}}</div>
+										<div div class="alert alert-danger" ng-show="deleted.error">error: {{deleted.error}}</div>
+										<td ng-hide="application.deleted.success">
+											<a bo-href="'/admin/'+application._id" class="no-color-link">
+												<h4 class="forms-name"><span class="fa fa-user" ng-show="thisCustomer._id==application.customerId"></span> <span bo-text="application.appName"></span> </h4>
+											</a>
+												Created <span bo-bind="application.createdDate | date:'MM/dd/yyyy'"></span> by <span ng-if="customerInfoMap[application.customerId]">{{customerInfoMap[application.customerId]}}</span><span ng-if="!customerInfoMap[application.customerId]"><span bo-text="application.customerId"></span></span> <span ng-show="application.draftLastSaved">| Updated <span bo-bind="application.draftLastSaved| date:'MM/dd/yyyy hh:mm a'"></span></span><br>
+												<span ng-show="application.activeEndDate">Active End Date: <span bo-bind="application.activeEndDate | date: 'MM/dd/yyyy'"></span></span><br><strong>
+												<a bo-href="'/admin/'+application._id+'?tab=share'">SHARE FORM</a> | <a bo-href="'/admin/'+application._id+'?tab=edit'">EDIT FORM</a> | <a bo-href="'/admin/'+application._id">VIEW SUBMISSIONS</a></strong>
+
+										</td>
+										<td class="text-center vcenter" ng-hide="application.deleted.success"><h4><span ng-show="accountSubs[application._id]">{{accountSubs[application._id]}}</span><span ng-show="accountSubs[application._id] == null">0</span></h4></td>
+										<!--<td class="text-center vcenter"  ng-hide="application.deleted.success">
+
+										<!-- application.categories: {{application.categories}}<br>
+														application.categories.length: {{application.categories.length}}<br>
+														application.categories[0] != null: {{application.categories[0] != null}}
+											<span ng-repeat="category in application.categories|notNull">
+												<span ng-repeat="acctCategory in account.categories">
+													<span ng-if="acctCategory._id==category._id" class="label label-default" style="margin-right:2px;">
+														{{acctCategory.categoryName}}
+													</span>
+												</span>
+											</span>
+
+										</td>-->
+
+										<!-- <td class="text-center vcenter" ng-hide="application.deleted.success">
+											{{(submissions|filter:{appId: application._id, submitted: true}).length}}
+										</td> -->
+										<td class="text-center vcenter" ng-hide="application.deleted.success">
+											<!-- show if platform is active -->
+											<div ng-model="application.active"  ng-show="application.active == true" class="text-center">
+
+												<button class="btn btn-success" type="button" ng-click="activatePlatform(application,false)">Active</button>
+											</div>
+
+											<!-- show if platform is inactive-->
+											<div ng-model="application.active" ng-show="application.active == false" class="text-center">
+
+												<button class="btn btn-danger" type="button" ng-click="activatePlatform(application,true)">Inactive</button>
+											</div>
+										</td>
+										<td class="text-center vcenter" ng-hide="application.deleted.success">
+											<div class="modal fade" id="myModal{{application._id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+												<div class="modal-dialog">
+													<div class="modal-content">
+														<div class="modal-header">
+															&nbsp;<button type="button" class="close" data-dismiss="modal" aria-hidden="true">Close</button>
+														</div>
+														<div class="modal-body white-space-normal">
+															Are you sure? Clicking "Delete" will delete the Platform and all {{(submissions|filter:{appId: application._id, submitted: true}).length}} submissions associated with the Platform.
+															<br>
+															<button type="button" class="btn btn-danger" role="button" ng-click="deletePlatform(application)" data-dismiss="modal" aria-hidden="true">Delete</button>
+															<button type="button" class="btn btn-success" role="button" data-dismiss="modal" aria-hidden="true">Never mind</button>
+														</div>
+													</div>
+												</div>
+											</div>
+											<a class="btn btn-danger" role="button" data-toggle="modal"  data-target="#myModal{{application._id}}" type="button" ng-disabled="customerRole == 'user' && customerId != application.customerId">Delete</a>
+										</td>
+										<td class="text-center vcenter" ng-hide="application.deleted.success">
+											<button type="button" class="btn btn-info" ng-click="duplicateForm(application._id);" href="/add" ng-disabled="accountType == 'Free' && applications.length > 0">Duplicate</button>
+										</td>
+
+									</tr>
+
+								</tbody>
+
+							</table>
+
+						</div>
+					</div>
+					<a href="/add" class="btn btn-primary" ng-show="applicationsToFilter().length > 5"> + Create Form</a>
+					<br><br>
+				</div>
+			</div>
+
+   </section><!-- /.content -->
+ </aside><!-- /.right-side -->
+</div>
+		<% include partials/javascripts.ejs %>
+	</body>
+	</html>

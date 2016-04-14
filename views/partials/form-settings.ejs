@@ -1,0 +1,144 @@
+<!-- Admin View -->
+<!-- General Form Settings in Create Form -->
+
+<div class="panel panel-default" ng-init="init('<%= user._id %>','<%= user.account.acctId %>','<%= user.account.role %>','<%= account.type %>')">
+    <div class="panel-heading">
+        <h3 class="panel-title"><a href="#" ng-click="formSettings.isCollapsed=!formSettings.isCollapsed"><div class="row"><div class="col-xs-11">Basic Form Settings</div><div class="col-xs-1"> <span class="fa fa-chevron-down"></span></div></div></a></h3>
+    </div>
+
+    <div class="panel-body" ng-hide="formSettings.isCollapsed">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group has-feedback">
+                    <label>Button Text <a href="#" tooltip-placement="right" tooltip="{{tooltips.buttonText}}" tabindex="-1"><i class="fa fa-info-circle"></i></a> <span class="optional-text">(Optional)</span></label>                        
+                    <input type="text" class="form-control" ng-model="newSchema.callToAction" placeholder="Default: Submit" />
+                    <span ng-show="formField.fieldName" class="fa fa-check form-control-feedback"></span>
+                </div> 
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group has-feedback">
+                    <label>Confirmation Message <a href="#" tooltip-placement="right" tooltip="{{tooltips.confirmMsg}}" tabindex="-1"><i class="fa fa-info-circle"></i></a> <span class="optional-text">(Optional)</span></label>
+
+                    <textarea class="form-control" ng-model="newSchema.confirmation" placeholder="Default: Thanks! Your response has been recorded.">
+                    </textarea>
+                    <span ng-show="formField.fieldName" class="fa fa-check form-control-feedback"></span>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group has-feedback">                                                    
+                    <div ng-show="(newSchema.logoURL == '' && uploader.queue.length==0)|| (!newSchema.logoURL && uploader.queue.length==0)"><label>Upload Hosted Form Logo <a href="#" tooltip-placement="right" tooltip="{{tooltips.logo}}" tabindex="-1"><i class="fa fa-info-circle"></i></a> <span class="optional-text">(Optional)</span></label> 
+                        <span class="btn btn-default btn-file">Choose image<input type="file" ng-file-select accept="image/*"/></span><br><span ng-show="logoError" class="text-danger"><em>{{logoErrorText}}</em></span>
+                    </div>
+                    <div ng-repeat="item in uploader.queue" ng-hide="newSchema.logoURL">                                        
+                        <label>Hosted Form Logo</label><br><img img-thumb class="img-thumb img-margin">
+                        <img img-data="item.file" style="display:none">
+                        <button type="button" class="btn btn-danger btn-xs" ng-click="item.remove();newSchema.logoURL='';"><i class="fa fa-trash"></i>Remove</button>
+                    </div>       
+                    <div ng-show="newSchema.logoURL">                                            
+                        <label>Hosted Form Logo</label><br>
+                        <img ng-src="{{newSchema.logoURL}}" class="img-thumb img-margin">
+                        <button type="button" class="btn btn-danger btn-xs" ng-click="newSchema.logoURL='';"><i class="fa fa-trash"></i>Remove</button>                                            
+                    </div>                                                                                                    
+                </div> 
+            </div>
+
+        </div>                        
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label>Require all responders to fill out CAPTCHA</label>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" ng-model="newSchema.hasCaptcha" ng-value="true">Yes
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" ng-model="newSchema.hasCaptcha" ng-value="false">No
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Do You Want To Include Share Buttons in Your Hosted Form? <a href="#" tooltip-placement="right" tooltip="{{tooltips.socialShareButtons}}" tabindex="-1"><i class="fa fa-info-circle"></i></a></label>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" ng-model="newSchema.socialShareButtons" ng-value="true">
+                            Yes
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" ng-model="newSchema.socialShareButtons" ng-value="false">
+                            No
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group has-feedback" ng-hide="!newSchema.socialShareButtons">
+                            <label>Social Media Title <a href="#" tooltip-placement="right" tooltip="{{tooltips.socialTitle}}" tabindex="-1"><i class="fa fa-info-circle"></i></a> <span class="optional-text">(Optional)</span></label>                                
+                            <input type="text" class="form-control" ng-model="newSchema.socialTitle" placeholder="Default: {{newSchema.appName}}" />
+                        </div> 
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group has-feedback" ng-hide="!newSchema.socialShareButtons">
+                            <label>Social Media Description <a href="#" tooltip-placement="right" tooltip="{{tooltips.socialDescription}}" tabindex="-1"><i class="fa fa-info-circle"></i></a> <span class="optional-text">(Optional)</span></label>                                
+                            <input type="text" class="form-control" ng-model="newSchema.socialDescription" />
+                        </div>  
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">                
+                    <div class="form-group">
+                        <label>Allow responders to edit response after submitting (Hosted Form only)</label>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" ng-model="newSchema.submissionEdit" ng-value="true">Yes
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" ng-model="newSchema.submissionEdit" ng-value="false">No
+                            </label>
+                        </div>
+                    </div>                                
+            </div>
+            <div class="col-md-8" ng-show="newSchema.submissionEdit">
+                <div class="row">
+                    <div class="col-md-12">                                        
+                        <label>Message next to 'Save as Draft' button <span class="optional-text">(Optional)</span></label>
+                        <input type="text" class="form-control" ng-model="newSchema.messageNextToDraftBtn" placeholder="Default: Click to save your submission to be edited later."/>
+                    </div>                                    
+                </div> 
+                <div class="row" ng-show="replyToOptions.length>0">
+                    <div class="col-md-12">                                        
+                        <label>'Save Draft' Email Subject Line <span class="optional-text">(Optional)</span></label>
+                        <input type="text" class="form-control" ng-model="newSchema.submissionEditSubjectLine" ng-init="newSchema.submissionEditSubjectLine='Your draft has been saved'"/>
+                    </div>                                    
+                </div>
+                <div class="row" ng-show="replyToOptions.length>0">
+                    <div class="col-md-12">
+                        <label>'Save Draft' Email Message <span class="optional-text">(Optional)</span></label>
+                        <textarea type="text" class="form-control" ng-model="newSchema.submissionEditMessage" placeholder=""/></textarea>
+                    </div>                                    
+                </div>
+            </div>
+        </div>        
+    </div>
+</div>

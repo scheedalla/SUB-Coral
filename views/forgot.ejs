@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<!-- The Forgot Password View-->
+<!-- Path: /forgot-->
+<html ng-app="profile" lang="en" class="bg-black">
+<head>
+    <title>Forgot Password</title>
+    <% include partials/css.ejs %>    
+</head>
+<body ng-controller="SettingsCtrl" class="login bg-black" ng-cloak>
+
+    <div class="form-box" id="login-box"  ng-controller="AppCtrl">
+        <div class="header">Forgot Password</div>
+        <div class="body bg-gray">
+            <div ng-init="initErrorMessages('<%= errorMessage %>','<%= successMessage %>')"></div>
+            <br>
+            <div class="alert alert-danger" ng-show="errorMessage != 'null'"><i class="fa fa-ban"></i>{{errorMessage}} </div>
+            <div class="alert alert-success" ng-show="successMessage != 'null'" ><i class="fa fa-check"></i>{{successMessage}} </div>
+            <form action="/forgot" method="post" name="forgot">        
+                <div class="form-group">
+                    <label>Email Address*</label>
+                    <input type="text" class="form-control" name="email" placeholder="Email Address" ng-model="emailAddress" required>
+                </div>
+                <button type="submit" class="btn  btn-lg btn-block bg-olive" ng-disabled="login.$invalid">Reset Password</button>
+            </form>
+
+        </div>
+        <div class="footer">
+            <p><a class="btn-link" ng-model="loginRegister" href="/login">Sign In</a>            </p>
+        </div>
+
+
+
+
+
+    </div>
+    <% include partials/javascripts.ejs %>
+</body>
+</html>

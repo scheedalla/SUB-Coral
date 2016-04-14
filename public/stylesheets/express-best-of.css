@@ -1,0 +1,10 @@
+/*custom stylesheet for Express Best Of article*/
+
+.sub.express-best-of {
+	clear:both;
+	padding-top:10px;
+}
+
+.sub.express-best-of h1, .sub.express-best-of h5{
+	display:none;
+}

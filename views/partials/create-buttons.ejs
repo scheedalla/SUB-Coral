@@ -1,0 +1,32 @@
+<!-- Admin View -->
+<!-- Create/Save Form Button -->
+
+<div class="row buttons" data-spy="affix"  data-offset-top="210">
+    <div class="col-sm-12">
+
+        <button class="btn btn-large btn-success"  ng-click="saveForm('<%= user.customerName %>', '<%= user._id %>' );" type="button">Save Form</button>
+         <span ng-show="newSchema.draftLastSaved" class="draft-saved-text">Last saved by {{newSchema.draftLastSavedUser}} at {{newSchema.draftLastSaved | date:'MM/dd/yyyy hh:mm a'}}</span> 
+           <span class="shortmsg" ng-show="appCreatedSuccessMsg">Congrats! <strong>"{{newSchema.appName}}"</strong> has been created!</span>
+           <span class="shortmsg" ng-show="updateSuccess">Success! <strong>"{{newSchema.appName}}"</strong> has been updated!</span>
+        <div class="alert alert-success alert-dismissable alert-margin-top" ng-show="appCreatedSuccessMsg">
+            <i class="fa fa-check"></i>
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <span>Congrats! <strong>"{{newSchema.appName}}"</strong> has been created! <a href="/hosted/{{newSchema._id}}" target="_blank" class="btn btn-link url-break-word">View the hosted form</a> to try it out. When you're done editing, check out the <a href="/admin/{{newSchema._id}}">Admin page</a> to see submissions, ways to share the form, and more!</span>
+        </div>
+        <div ng-show="createFormErrors" class="text-red"><strong>Your form has errors, please correct below.</strong></div>
+        <div class="alert alert-success alert-dismissable alert-margin-top" ng-show="updateSuccess">
+            <i class="fa fa-check"></i>
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <span class="text-success" role="alert" ng-show="updateSuccess">
+               Success! <strong>"{{newSchema.appName}}"</strong> has been updated!<a href="//{{thisDomain}}/hosted/{{newSchema._id}}" target="_blank" class="btn btn-link url-break-word">View the hosted form</a>to try it out, or click 'Share Form' on the <a href="/admin/{{newSchema._id}}">Admin page</a> to put it on your website.</span>
+           </span>
+       </div>  
+
+       <div class="alert alert-success alert-dismissable" ng-show="importSuccess || importError">
+        <i class="fa fa-check"></i>
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <span ng-show="importSuccess">{{importSuccess}} <a href="/admin/{{newSchema.appId}}" class='btn btn-success'>View your submissions</a></span>
+        <span class="alert alert-danger" role="alert" ng-show="importError">{{importError}}</span>
+       </div>   
+   </div>
+</div>

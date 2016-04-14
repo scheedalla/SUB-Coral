@@ -1,0 +1,35 @@
+<!-- Admin View -->
+<!-- Modal for Manage Tags -->
+
+<!-- Start Modal Template -->
+<script type="text/ng-template" id="tags.html">
+<div class="modal-header">
+  <button type="button" class="close" data-ng-click="modalOptions.close()" aria-hidden="true">Close</button>
+  <h3>{{modalOptions.headerText}}</h3>
+</div>
+<div class="modal-body">
+
+		<div class="alert alert-danger" ng-show="manageTags.error" >{{manageTags.error}} </div>
+		<div>
+
+			<div class="alert alert-warning" ng-show="manageTags.removeTag" >
+				There are {{(subs|subsWithTag:manageTags.removeTag:manageTags.tag).length}} submissions with the {{manageTags.tag}} tag. Removing this tag will remove it from all submissions. Are you sure you want to remove this tag?<br>
+				<a class="btn btn-link btn-remove-tag" type="button" ng-click="removeTag(manageTags.index); manageTags.removeTag = false">Yes</a>
+				<a class="btn btn-link btn-remove-tag" type="button" ng-click="manageTags.removeTag = false">No (Cancel)</a>
+			</div>
+			<form ng-submit="addTag()">
+				<input type="text" ng-model="manageTags.newTag" placeholder="Type to add a tag and hit enter or return on your keyboard." class="form-control" />
+			</form>
+		</div>
+		<div class="existing-tags">
+		<button type="button" class="btn btn-info" ng-repeat="(index, tag) in app.tags track by $index" ng-click="manageTags.index = index ; manageTags.removeTag = true; manageTags.tag = tag">
+			{{tag}} <i class="fa fa-remove" ></i>
+		</button>
+	</div>
+	</div>
+</div>
+<div class="modal-footer">
+	<button class="btn btn-primary" type="submit" id="addTag" data-ng-click="modalOptions.ok();">{{modalOptions.actionButtonText}}</button>
+</div>
+</script>
+<!-- End Modal Template -->

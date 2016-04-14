@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<!-- The Manage Users View-->
+<!-- PATH: /userManagement -->
+<html ng-app="profile">
+<!-- views/profile.ejs -->
+<head>
+  <title><%= account.name %> | Manage Users</title>
+  <% include partials/css.ejs %>
+</head>
+
+<body ng-controller="SettingsCtrl"  ng-cloak class="skin-blue">
+  <% include partials/nav-new.ejs %>
+
+  <div class="wrapper row-offcanvas row-offcanvas-left" ng-controller="AppCtrl">
+   <div ng-init="init('<%= user._id %>','<%= user.account.acctId %>','<%= user.account.role %>','<%= account.type %>');page='users'"></div>
+   <div ng-init="initErrorMessages('<%= errorMessage %>','<%= successMessage %>','<%= redirect %>')"></div>
+   <% include partials/nav-left.ejs %>
+   <!-- Right side column. Contains the navbar and content of the page -->
+   <aside class="right-side">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        Manage Users <% include partials/add-user-button.ejs %>                    
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="/profile">Profile</a></li>
+        <li class="active">Manage Users</li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <div class="col-md-12">
+
+         <% include partials/userManagementPartial.ejs %>
+         
+       </div>             
+     </div> 
+
+   </section><!-- /.content -->
+ </aside><!-- /.right-side -->
+</div>
+
+
+
+<% include partials/javascripts.ejs %>
+</body>
+</html>

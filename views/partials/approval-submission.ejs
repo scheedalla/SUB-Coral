@@ -1,0 +1,116 @@
+<!-- Admin View -->
+<!-- Viewing a Submission in Approval Tool -->
+
+<!-- Submission Data -->
+<div class="submission" ng-repeat="submission in subs | orderBy:predicate:reverse|togglableFilter:filterKey:filterVal:filterActive " bindonce ng-hide="isExportingtoSpreadsheet">
+	<div class="row" ng-show="submission.deleted">
+		<div class="col-sm-12 alert alert-danger pull-right">
+			Submission <span bo-text="submission._id"></span> has been deleted. Would you like to undo this action?
+			<button class="pull-right" type="button" ng-click="undoDelete(submission)">Undo</button>
+		</div>
+	</div>
+	<div ng-hide="submission.deleted">
+		<!--bulk action selector-->
+		<div class="col-sm-1" ng-show="bulkActions.on">
+		    <label>
+		        <input type="checkbox" ng-model="submission.isSelected" ng-change="bulkActions.updateSubs(submission._id, submission.isSelected)">
+		    </label>
+		</div>
+		<!-- END bulk action selector-->
+		<nav ng-class="{'col-sm-12' : !bulkActions.on, 'col-sm-11' : bulkActions.on}" class="navbar navbar-default clearfix" role="navigation">
+			<div class="container-fluid clearfix">
+
+				<div class="navbar-header">
+					<a ng-show="submission.approved" class="navbar-brand"><span>{{$index+ ((pag.bigCurrentPage - 1)*pag.itemsPerPage)+1}}. </span>	<span ng-hide="app.autoApproved">Approved</span></a>
+					<a ng-hide="submission.approved" class="navbar-brand"><span>{{$index+ ((pag.bigCurrentPage - 1)*pag.itemsPerPage)+1}}. </span>	<span ng-hide="app.autoApproved">Needs Approval</span></a>
+				</div>
+				<ul class="nav navbar-nav navbar-right">
+					<li ng-hide="submission.approved" ng-if="!app.autoApproved"><a ng-click="updateApproval(submission,true)" href="#" class="success">Approve</a></li>
+					<li ng-show="submission.approved" ng-if="!app.autoApproved"><a ng-click="updateApproval(submission,false)" href="#" class="warning">Unapprove</a></li>
+					<li><a ng-click="openSingleSub(submission._id)" href="#">View To Print</a></li>
+					<li><a href="#" ng-click="deleteSubmission(submission, $index)" class="danger">Delete</a></li>
+					<li><a ng-click="isCollapsed = !isCollapsed"><i class="fa fa-compress"></i></a></li>
+				</ul>
+			</div>
+		</nav>
+			<div collapse="isCollapsed" ng-init="isCollapsed=false;">
+				<!-- Start Form Fields -->
+				<div class="row">
+					<div ng-class="{'col-sm-12' : !bulkActions.on, 'col-sm-11 col-sm-offset-1' : bulkActions.on}">
+						<label class="question">Submission ID - </label> <span bo-text="submission._id"></span>
+					</div>
+				</div>
+
+				<div class="row">
+					<div ng-class="{'col-sm-12' : !bulkActions.on, 'col-sm-11 col-sm-offset-1' : bulkActions.on}">
+						<label class="question">Created - </label> <span bo-bind="submission.createdDate | date:'short'"></span>
+					</div>
+				</div>
+				<div class="row" ng-repeat="field in app.appFormFields" bindonce>
+					<div ng-class="{'col-sm-12' : !bulkActions.on, 'col-sm-11 col-sm-offset-1' : bulkActions.on}">
+
+						<editable-formfield form-id="application._id" content="field" model="submission.formData[field.uniqueId]" submission="submission"> </editable-formfield>
+
+					</div>
+				</div>
+				<!-- END Form Fields -->
+				<!-- Start Mediasets -->				
+				<div class="row platform" ng-hide="app.mediaSets.length == 0">
+					<div ng-class="{'col-sm-offset-1' : bulkActions.on}" class="col-sm-10">
+						<div class="panel panel-default formFields">
+							<div class="panel-heading">
+								<h3 class="panel-title">Media Sets</h3>
+							</div>
+							<div class="panel-body">
+								<div class="media" ng-repeat="mediaset in submission.mediasets | notNull">
+									<div class="alert alert-danger" ng-show="mediaset.edited" ng-init="mediaset.edited = false">Edits to the image set may not be reflected here until you refresh the page.</div>
+									<div ng-repeat="photo in mediaset.media" bindonce>
+										<% include approval-media.ejs %>
+									</div>
+									<a ng-show="mediaset.transfered != true" class="btn btn-success" href="/{{app._id}}/{{submission.mediasets[0].mediasetId}}/{{submission.mediasets[0].uniqueUploadId}}/{{submission._id}}/pup" role="button" target="_blank">Attach Photo(s)</a>
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- END Mediasets -->
+				<!-- Start Tags -->
+				<div class="row platform">
+					<div ng-class="{'col-sm-offset-1' : bulkActions.on}" class="col-sm-10">
+						<div class="panel panel-default formFields">
+							<div class="panel-heading">
+
+								<div class="row">
+									<div class="col-sm-1" style="margin-top:12px;">
+										<h3 class="panel-title">Tags</h3>
+									</div>
+									<div class="col-sm-11">
+										<select tag-ctrl
+										multiple
+										ng-model="submission.tags"
+										ng-options="value as value for value in app.tags"
+										ng-change="updateSub(submission)"
+										reply-to="application.tags"
+										chosen
+										data-placeholder="Select some options"
+										class="form-control" width="'100%'">
+										</select>
+									</div>
+							</div>
+						</div>
+						<div class="panel-body"></div>
+					</div>
+				</div>
+			</div>
+			<!-- END Tags-->
+			<!-- Compare Submission -->
+			<div class="checkbox">
+			    <label>
+			        <input type="checkbox" ng-model="compareSubmission" ng-click="compareSubmissions(submission._id, compareSubmission)"> Compare Submission
+			    </label>
+			</div>
+			<!-- END Compare Submission -->
+		</div>
+	</div>
+</div>

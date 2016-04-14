@@ -1,0 +1,105 @@
+<div class="form-box" id="login-box"  ng-controller="AppCtrl">
+
+    <div class="header" ng-hide="goRegister">Sign In</div>
+    <div class="header" ng-show="goRegister">Register</div>
+    <div class="body bg-gray">
+        <div ng-init="initErrorMessages('<%= errorMessage %>','<%= successMessage %>','<%= redirect %>')"></div>
+        <div ng-hide="goRegister">
+        <div class="login-type">
+          <div class="">
+            <label>
+              <input type="radio" name="loginType" value="sub" ng-model="loginType">
+              SUB
+          </label>
+          </div>
+            <div class="">
+                  <label>
+                    <input type="radio" name="loginType" value="twpn" ng-model="loginType">
+                    LDAP
+                </label>
+            </div>
+        </div><br>
+
+            <div class="alert alert-danger" ng-show="errorMessage != 'null'"><i class="fa fa-ban"></i>{{errorMessage}} </div>
+            <div class="alert alert-success" ng-show="successMessage != 'null'" ><i class="fa fa-check"></i>{{successMessage}} </div>
+
+        <!-- NORMAL LOGIN FORM -->
+        <div ng-show="loginType == 'sub'">
+            <form action='/login' method="post" name="login">
+                <div class="form-group">
+                    <label>User Name or E-mail Address*</label>
+                    <input type="text" class="form-control" name="username" placeholder="User Name" ng-model="loginUsername" required>
+                </div>
+                <div class="form-group">
+                    <label>Password*</label>
+                    <input type="password" class="form-control" name="password" placeholder="Password"  ng-model="loginPassword" required>
+                </div>
+                <input type="hidden" name="redirect" value={{redirectPath}} >
+                <button type="submit" class="btn  btn-lg btn-block bg-olive" ng-disabled="login.$invalid">Sign In</button>
+            </form>
+        </div>
+        <!-- TWPN LOGIN FORM -->
+        <div ng-show="loginType == 'twpn'">
+            <form action='/login-wp' method="post" name="login">
+                <div class="form-group">
+                    <label>TWPN User Name*</label>
+                    <input type="text" class="form-control" name="username" placeholder="User Name" ng-model="loginUsername" required>
+                </div>
+                <div class="form-group">
+                    <label>TWPN Password*</label>
+                    <input type="password" class="form-control" name="password" placeholder="Password"  ng-model="loginPassword" required>
+                </div>
+                <input type="hidden" name="redirect" value={{redirectPath}} >
+                <button type="submit" class="btn  btn-lg btn-block bg-olive" ng-disabled="login.$invalid">Sign In</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div ng-show="goRegister" class="text-left">
+        <form action="/register" method="post" name="register">
+            <div class="form-group">
+                <label for="userName">User Name*</label>
+                <input unique-username type="text" class="form-control" id="userName" name="userName" placeholder="" ng-model="username"  ng-minlength="5" required>
+                <span class="help-block" ng-show="register.userName.$dirty && register.userName.$error.isTaken">Username already taken</span>
+                <span class="help-block" ng-show="register.userName.$dirty && register.userName.$error.invalidChars">Username may not contain invalid characters or spaces</span>
+                <span class="help-block" ng-show="register.userName.$dirty && register.userName.$error.minlength">Username must be at least 5 characters</span>
+            </div>
+            <div class="form-group">
+                <label for="emailAddress">E-mail Address*</label>
+                <input unique-email type="email" ng-pattern="/^[a-z0-9!#$%&'*+/=?^_`{|}~.-]+@[a-z0-9-]+\.[a-z0-9-]/" class="form-control" id="emailAddress" name="emailAddress" ng-model="regEmail" placeholder="" required>
+                <span class="help-block" ng-show="register.emailAddress.$dirty && register.emailAddress.$error.isTaken">Email already in use</span>
+                <span class="help-block" ng-show="register.emailAddress.$error.pattern">E-mail address is not valid</span>
+            </div>
+            <div class="form-group">
+                <label for="customerName">Full Name*</label>
+                <input type="text" class="form-control" id="customerName" name="customerName" placeholder="" ng-model="regCustName" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Create Password*  <a href="#" tooltip-placement="right" tooltip="Password must have at least 8 characters"><i class="fa fa-info-circle"></i></a></label>
+                <input type="password" class="form-control" name="password" match="verification" ng-model="password" placeholder="" ng-minlength="8"required>
+                <span class="help-block" ng-show="register.password.$dirty && register.password.$error.minlength">Password must have at least 8 characters</span>
+            </div>
+            <div class="form-group">
+                <label for="password">Repeat Password*</label>
+                <input type="password" class="form-control" name="verification" ng-model="verification" placeholder="" ng-minlength="8" match="password" required>
+                <span class="help-block" ng-show="register.verification.$dirty && register.verification.$error.match && !register.verification.$error.required">Passwords don't match</span>
+            </div>
+
+            <div class="form-group">
+                <input ng-model="expirationLength" type="hidden">
+            </div>
+            <button type="submit" class="btn  btn-lg btn-block bg-olive" ng-disabled="register.$invalid" >Register</button>
+        </form>
+    </div>
+
+    </div>
+    <div class="footer">
+
+
+                    <p ng-hide="goRegister||loginType == 'twpn'"><a class="btn-link" href="/forgot">Forgot Password?</a></p>
+
+                    <p ng-hide="loginType == 'twpn'"><a class="btn-link" ng-model="loginRegister" ng-click="onLoginRegister()">{{loginRegister}}</a></p>
+                    <p class="text-center"><span class="fa fa-copyright"></span> 2014-2015 <strong>SUB</strong> </p>
+                </div>
+</div>

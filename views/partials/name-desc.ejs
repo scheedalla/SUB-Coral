@@ -1,0 +1,23 @@
+<!-- Admin View -->
+<!-- Create Form - Form Name and Description -->
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group has-feedback" ng-class="{'has-error': schema.appName.$invalid && !schema.appName.$pristine}">
+            <label class="control-label">Name<span class="sub_reqText">*</span> <a href="#" tooltip-placement="right" tooltip="{{tooltips.name}}" tabindex="-1"><i class="fa fa-info-circle"></i></a> <span ng-show="(schema.appName.$invalid && !schema.appName.$pristine)||(schema.appName.$invalid && createFormErrors)" class="text-red">Your form name is required.</span></label>
+            <input type="text" class="form-control" ng-model="newSchema.appName" name="appName" placeholder="Example: The Best Photo Contest Ever!" required/>
+            <span ng-show="newSchema.appName" class="fa fa-check form-control-feedback hidden-xs"></span>
+            
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group has-feedback">
+            <label class="control-label">Description <a href="#" tooltip-placement="right" tooltip="{{tooltips.description}}" tabindex="-1"><i class="fa fa-info-circle"></i></a> <span class="optional-text">(Optional)</span></label>
+            <textarea class="form-control" rows="2" ng-model="newSchema.appDescription" name="appDescription" placeholder="Example: Submit your favorite New Year’s Eve photos for users to rate." >
+            </textarea>
+
+        </div>
+    </div>
+</div>

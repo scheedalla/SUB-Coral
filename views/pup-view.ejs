@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<!-- The Media Uploader View-->
+<!-- Path: /:appId/:msId/:upId/:subId/pup-->
+
+<!-- Adapted from http://nervgh.github.io/pages/angular-file-upload/examples/image-preview/ -->
+<!-- https://github.com/nervgh/angular-file-upload -->
+<html id="ng-app" ng-app="pupApp">
+<head>
+  <title>Upload Here</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/stylesheets/bootstrap/3.1.1/bootstrap.min.css">
+  <link rel="stylesheet" href="/stylesheets/font-awesome/4.2.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/stylesheets/pup.min.css">
+  <link rel="stylesheet" href="/stylesheets/AdminLTE.min.css">
+</head>
+<body ng-controller="pupController" ng-file-drop ng-mouseenter="hasMouse=true" id="top" ng-cloak>
+    <!-- Alerts -->
+    <div class="alert alert-danger alert-dismissable" ng-show="hasError || mediasetError">
+        {{errorText}}
+    </div>
+    <div class="alert alert-success alert-dismissable" ng-show="hasSuccess">
+        {{successText}}
+    </div>
+    <!-- end: Alerts -->
+    <div loading-indicator ng-show="isLoading"></div>
+    <div class="container-fluid" ng-hide="mediasetError || (oldImgsSuccess || newImgsSuccess)" ng-class="{containerLoading: isLoading}">
+        <form name="pupForm">
+
+         <div class="row" ng-hide="editMode">
+             <div class="col-md-12">
+                <!-- BEGIN: Drop Zone-->
+                <div ng-show="uploader.isHTML5" ng-hide="mediaset.numOfMedia <= (uploader.queue.length + thisMedia.length)" class="">
+                  <div class="well my-drop-zone text-center" ng-file-over="another-file-over-class">
+                    <div ng-hide="(uploader.queue.length + thisMedia.length) > 0">
+                        <drop-zone-icon media-type="mediaset.mediaSetType"></drop-zone-icon>
+                        <h1><em>Drag <span ng-if="mediaset.mediaSetType == 'image'">up to {{mediaset.numOfMedia}}</span> {{mediaset.mediaSetType}}<span ng-if="mediaset.mediaSetType == 'image'">(s)</span> here</em></h1>
+                        <h5><strong>Allowed file types: </strong><drop-zone-file-type media-type="mediaset.mediaSetType"></drop-zone-file-type></h5>
+                        <h5><strong>Maximum upload file size:</strong> 10 MB </h5>
+                    </div>
+                    <span class="btn btn-default btn-file white-space-normal">Attach {{mediaset.mediaType}} from computer/device<drop-zone-button media-type="mediaset.mediaSetType" num="mediaset.numOfMedia"></drop-zone-button></span>
+                  </div>
+                </div>
+                <!-- END: Drop Zone-->
+                <!-- BEGIN: Status Bar -->
+            <div class="row" ng-show="thisMedia.length != 0 || uploader.queue.length > 0">
+                <div class="col-md-6 col-sm-6 col-xs-6">
+                    <h4><strong>Status:</strong> {{uploader.queue.length + thisMedia.length}}/{{mediaset.numOfMedia}} {{mediaset.mediaSetType}}(s)</h4>
+                    <h5 ng-hide="mediaset.mediaSetFormFields.length==0" class="sub_reqText">*REQUIRED FIELDS</h5>
+
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right" ng-show="thisMedia.length > 4 || uploader.queue.length > 4">
+                    <button type="button" class="btn btn-success btn-lg" ng-click="submitPupForm();">
+                        <span class="fa fa-upload"></span> <span ng-if="thisMedia.length > 0">Save Changes</span><span ng-if="thisMedia.length == 0">Attach</span>
+                    </button>
+                </div>
+            </div>
+            <hr ng-show="thisMedia.length != 0 || uploader.queue.length > 0">
+            <!-- END: Status Bar-->
+        </div>
+    </div>
+    <!-- BEGIN: Newly Uploaded Media List-->
+    <div ng-repeat="item in uploader.queue.slice().reverse()" ng-hide="editMode && !item.editing">
+        <div class="row" >
+            <div class="col-md-3">
+                <div ng-hide="editMode">
+            <!-- <strong>--Newly Uploaded Image--</strong>
+                <pre>
+                    {{item.file | json}}
+                    <br>
+                    seqNum: {{item.sequenceNumber}}
+                </pre> -->
+
+                <strong class="word-wrap">{{ item.file.name }}</strong>
+                <!-- BEGIN: If Image -->
+                <div ng-if="mediaset.mediaSetType == 'image'">
+                    <div class="thumbnContainer">
+                        <img img-thumb ng-if="hasFileReader" class="img-margin img-thumb" src="http://place-hold.it/100&text=Loading..." /><i class="fa fa-file-image-o glyphicon-pic-size" ng-if="!hasFileReader"></i>
+                    </div>
+                    <button type="button" class="btn btn-primary btn-xs"  ng-show="hasFileReader" ng-click="item.editing=!item.editing;$emit('editMode','');"><span class="fa fa-pencil"></span> Edit image </button>
+                    <button  ng-hide="editMode || mediaset.mediaSetFormFields.length>0" type="button" class="btn btn-danger btn-xs" ng-click="deletePhoto(item.sequenceNumber,true)">
+                        <span class="fa fa-trash"></span> Delete {{mediaset.mediaSetType}}
+                    </button>
+                </div>
+                <!-- END: If Image -->
+
+                <!-- BEGIN: If Not Image -->
+                <div ng-if="mediaset.mediaSetType != 'image'">
+                    <!-- BEGIN: If Document -->
+                    <div ng-if="mediaset.mediaSetType == 'document'">
+                        <div class="thumbnContainer">
+                            <span ng-show="fileExtentions"><file-ext type="fileExtentions"></file-ext></span><span ng-show="!fileExtentions"><i class="fa fa-file-text-o glyphicon-pic-size"></i></span>
+                        </div>
+                        <br>
+                    </div>
+                    <!-- END: If Document -->
+                    <!-- BEGIN: If Video -->
+                    <div ng-if="mediaset.mediaSetType == 'video'">
+                        <div class="thumbnContainer"><i class="fa fa-file-video-o glyphicon-pic-size"></i></div>
+                        <br>
+                    </div>
+                    <!-- END: If Video -->
+                    <!-- BEGIN: If Audio -->
+                    <div ng-if="mediaset.mediaSetType == 'audio'">
+                        <div class="thumbnContainer"><i class="fa fa-file-audio-o glyphicon-pic-size"></i></div>
+                    </div>
+                    <!-- END: If Audio -->
+                    <button ng-hide="editMode || mediaset.mediaSetFormFields.length>0" type="button" class="btn btn-danger btn-xs" ng-click="deletePhoto(item.sequenceNumber,true)">
+                        <span class="fa fa-trash"></span> Delete {{mediaset.mediaSetType}}
+                    </button>
+                </div>
+                <!-- END: If Not Image -->
+
+            </div>
+
+        </div>
+        <div class="col-md-7" ng-hide="mediaset.mediaSetFormFields.length==0">
+           <div ng-hide="editMode"><sub-formfield form-id="item.file.size" content="field" ng-repeat="field in mediaset.mediaSetFormFields" model="item.file.mediasetFormData[field.uniqueId]"> </sub-formfield></div>
+       </div>
+       <div class="col-md-2" ng-hide="mediaset.mediaSetFormFields.length==0">
+        <button ng-hide="editMode" type="button" class="btn btn-danger" ng-click="deletePhoto(item.sequenceNumber,true)">
+            <span class="fa fa-trash"></span> Delete This
+        </button>
+    </div>
+
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN: Edit Mode -->
+        <div ng-show="item.editing">
+
+            <h4 ng-show="!cropping && !rotating">
+              <a href="#" ng-click="item.editing=!item.editing;$emit('editMode','');"><span class="fa fa-arrow-left"></span> &nbsp;Save and Return to List of Images</a>
+          </h4>
+          <br>
+          <div class="editBar" ng-show="!cropping && !rotating">
+            <button type="button" class="btn btn-primary" ng-click="$broadcast('crop','');">Crop</button>
+            <button type="button" class="btn btn-primary" ng-click="$broadcast('rotate','');">Rotate</button>
+            <button type="button" class="btn btn-primary" ng-click="$broadcast('reset','');">Restore</button>
+            <button type="button" class="btn btn-success pull-right btn-done" ng-click="item.editing=!item.editing;$emit('editMode','');">Done</button>
+        </div>
+        <div class="saveBar" ng-hide="!cropping && !rotating">
+            <button type="button" class="btn btn-primary" ng-click="$broadcast('save','');">Save</button>
+            <button type="button" class="btn btn-primary" ng-click="$broadcast('cancel','');">Cancel</button>
+
+        </div>
+        <br>
+        <img ng-show="hasFileReader" img-data="item.file" img-editable class="img-max-width" crop="item.file.crop" rotation="item.file.rotation" ng-src="http://placehold.it/100&text=Loading..." />
+    </div>
+    <!-- BEGIN: Edit Mode -->
+</div>
+</div>
+<hr>
+</div>
+<!-- END: Newly Uploaded Media List -->
+<!-- BEGIN: Already Uploaded Media List-->
+
+
+<div ng-repeat = "img in thisMedia | orderBy:'-sequenceNumber'" ng-hide="editMode && !img.editing">
+    <div class="row">
+        <!-- <pre>
+            Already uploaded media <br>
+            {{img | json}}
+        </pre> -->
+        <div class="col-md-3">
+            <div ng-hide="editMode">
+                <strong class="word-wrap">{{img.originalName}}</strong>
+                <!-- BEGIN: If Image -->
+                <div ng-if="mediaset.mediaSetType == 'image'">
+                    <div class="thumbnContainer">
+                    <img ng-if="hasFileReader" img-data-from-uri="//noname.com/{{upId}}/{{img.sequenceNumber}}{{img.fileExtentions}}" img-thumb crop="img.crop" rotation="img.rotation" class="img-margin img-thumb" src="http://place-hold.it/100&text=Loading..."/><i class="fa fa-file-image-o glyphicon-pic-size" ng-if="!hasFileReader"></i><br>
+                    <button type="button" class="btn btn-primary btn-xs"  ng-show="hasFileReader" ng-click="img.editing=!img.editing;$emit('editMode','');" ng-show="hasFileReader"><span class="fa fa-pencil"></span> Edit image </button>
+                    <button  ng-hide="editMode || mediaset.mediaSetFormFields.length>0" type="button" class="btn btn-danger btn-xs" ng-click="deletePhoto(img.sequenceNumber,false);thisMedia.splice(img.sequenceNumber, 1)">
+                        <span class="fa fa-trash"></span> Delete {{mediaset.mediaSetType}}
+                    </button>
+                </div>
+                </div>
+                <!-- END: If Image-->
+
+                <!-- BEGIN: If Not Image-->
+                <div ng-if="mediaset.mediaSetType != 'image'">
+                    <!-- BEGIN: If Document -->
+                    <div ng-if="mediaset.mediaSetType == 'document'">
+                        <div class="thumbnContainer"><file-ext type="fileExtentions"></file-ext><i class="fa fa-file-text-o glyphicon-pic-size" ng-show="!fileExtentions"></i></div>
+                    </div>
+                    <!-- END: If Document -->
+                    <!-- BEGIN: If Video -->
+                    <div ng-if="mediaset.mediaSetType == 'video'">
+                        <div class="thumbnContainer"><i class="fa fa-file-video-o glyphicon-pic-size"></i></div>
+                    </div>
+                    <!-- END: If Video -->
+                    <!-- BEGIN: If Audio -->
+                    <div ng-if="mediaset.mediaSetType == 'audio'">
+                        <div class="thumbnContainer"><i class="fa fa-file-audio-o glyphicon-pic-size"></i></div>
+                    </div>
+                    <!-- END: If Audio -->
+                    <button ng-hide="editMode || mediaset.mediaSetFormFields.length>0" type="button" class="btn btn-danger btn-xs" ng-click="deletePhoto(img.sequenceNumber,false);thisMedia.splice(img.sequenceNumber, 1)">
+                        <span class="fa fa-trash"></span> Delete {{mediaset.mediaSetType}}
+                    </button>
+                </div>
+                <!-- END: If Not Image-->
+
+            </div>
+
+        </div>
+        <div class="col-md-7">
+            <div ng-hide="editMode"><sub-formfield form-id="img._id" content="field" ng-repeat="field in mediaset.mediaSetFormFields" model="img.mediasetFormData[field.uniqueId]"> </sub-formfield>
+            </div>
+        </div>
+        <div class="col-md-2" ng-hide="mediaset.mediaSetFormFields.length==0">
+            <button  ng-hide="editMode" type="button" class="btn btn-danger" ng-click="deletePhoto(img.sequenceNumber,false);thisMedia.splice(img.sequenceNumber, 1)">
+                <span class="fa fa-trash"></span> Delete This
+            </button>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div ng-show="img.editing">
+                <h4 ng-show="!cropping && !rotating"><a href="#" ng-click="img.editing=!img.editing;$emit('editMode','');" ><span class="fa fa-arrow-left"></span> &nbsp;Save and Return to List of Images</a></h4><br>
+                <div class="editBar" ng-show="!cropping && !rotating">
+                    <button  type="button" class="btn btn-primary" ng-click="$broadcast('crop','');">Crop</button>
+                    <button type="button" class="btn btn-primary" ng-click="$broadcast('rotate','');">Rotate</button>
+                    <button type="button" class="btn btn-primary" ng-click="$broadcast('reset','');">Restore</button>
+                    <button type="button" class="btn btn-success pull-right btn-done" ng-click="img.editing=!img.editing;$emit('editMode','');">Done</button>
+                </div>
+                <div class="saveBar" ng-hide="!cropping && !rotating">
+                    <button type="button" class="btn btn-primary" ng-click="$broadcast('save','');">Save</button>
+                    <button type="button" class="btn btn-primary" ng-click="$broadcast('cancel','');">Cancel</button>
+
+                </div>
+                <br>
+                <img img-data-from-uri="//noname.com/{{upId}}/{{img.sequenceNumber}}{{img.fileExtentions}}" img-editable crop="img.crop" rotation="img.rotation" class="img-max-width"/>
+
+            </div>
+        </div>
+    </div>
+    <hr>
+</div>
+<!-- END: Already Uploaded Media List-->
+
+<!-- BEGIN: Button-->
+<div class="row" ng-show="thisMedia.length != 0 || uploader.queue.length > 0" ng-hide="editMode">
+<div class="col-md-12 text-right">
+    <button type="button" class="btn btn-success btn-lg" ng-disabled="pupForm.$invalid" ng-click="submitPupForm();">
+        <span class="fa fa-upload"></span> <span ng-if="thisMedia.length > 0">Save Changes</span><span ng-if="thisMedia.length == 0">Attach</span>
+    </button>
+    <br><br>
+</div>
+</div>
+<!-- END: Button-->
+</form>
+
+</div>
+<!-- BEGIN: Confirmation Message-->
+<div class="container-fluid" ng-show="oldImgsSuccess && transfered|| newImgsSuccess && transfered">
+    <h2>Thank you! Your {{mediaset.mediaSetType}}<span ng-if="mediaset.mediaSetType == 'image'">(s) have</span><span ng-if="mediaset.mediaSetType != 'image'"> has</span> been uploaded! Please close this dialog box to continue.</h2>
+</div>
+<!-- END: Confirmation Message-->
+<!-- <script src="/javascripts/vendors/es5-shim/2.3.0/es5-shim.min.js"></script>
+<script src="/javascripts/resources/jquery/jquery.js"></script>
+<script src="/javascripts/resources/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="/javascripts/resources/angular/angular.min.js"></script>
+<script src="/javascripts/resources/jcrop/js/jquery.Jcrop.min.js"></script>
+<script src="/javascripts/vendors/angular-ui/ui-bootstrap-tpls-0.12.0.min.js"></script>
+<script src="/javascripts/resources/angular-resource/angular-resource.js"></script> -->
+<script src="/javascripts/pup-vendor.min.js"></script>
+<script src="/javascripts/resources/ng-file-upload/ng-file-upload-shim.min.js"></script> <!-- for no html5 browsers support -->
+<script src="/javascripts/resources/ng-file-upload/ng-file-upload.min.js"></script>
+
+
+<!-- uncomment/comment below to toggle between minified and uncombo'd versions-->
+<!-- <script src="../../../../javascripts/pup.min.js"></script> -->
+<script src="/javascripts/pup.annotated.js"></script>
+ <!--<script src="../../../../javascripts/resources/angular-file-upload/angular-file-upload.js"></script>
+<script src="../../../../javascripts/resources/angular-img-edit/angular-imgEditor.js"></script>
+<script src="../../../../javascripts/applications/PupApp.js"></script>
+<script src="../../../../javascripts/controllers/PupControllers.js"></script>
+<script src="../../../../javascripts/directives/PupDirectives.js"></script>
+<script src="../../../../javascripts/directives/HostedDirectives.js"></script>
+<script src="../../../../javascripts/factories/UuidFactories.js"></script>-->
+
+</body>
+</html>

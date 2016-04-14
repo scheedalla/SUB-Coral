@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<!-- The parent container for Submissions, Edit Form, Share Form-->
+<!-- Path: /admin-->
+<html ng-app="admin">
+<head>
+	<title>Admin | <%= appId %></title>
+	<% include partials/css.ejs %>
+</head>
+<body ng-controller="SettingsCtrl" ng-cloak  ng-cloak class="skin-blue">
+	<div loading-indicator ng-show="isLoading || isLoadingHard"></div>
+	<% include partials/nav-new.ejs %>
+
+	<div class="wrapper row-offcanvas row-offcanvas-left" ng-controller="AppCtrl" ng-class="{containerLoading: isLoading || isLoadingHard}">
+		<div ng-init="init('<%= user._id %>','<%= user.account.acctId %>','<%= user.account.role %>','<%= account.type %>','<%= activeTab %>','<%= embedCssRef %>')"></div>
+		<div ng-init="appApprove('<%= appId %>')"></div>
+		<% include partials/nav-left.ejs %>
+		<!-- Right side column. Contains the navbar and content of the page -->
+		<aside class="right-side">
+			<!-- Content Header (Page header) -->
+			<section class="content-header">
+				<h1>
+					{{app.appName}}
+				</h1>
+			</section>
+
+			<!-- Main content -->
+			<section class="content">
+				<div>
+					<ng-analytics-auth label="Hallo:&nbsp;" hide-on-auth="true" auth-container="embed-api-auth-container"></ng-analytics-auth>
+
+					<ng-ga-chart chart="chart" view-selector-container="view-selector-container" auth-container="embed-api-auth-container"></ng-ga-chart>
+
+				</div>
+				<div class="tabs">
+					<tabset justified="true" class="nav-tabs-custom">
+						<tab ng-repeat="tab in tabs" active="tab.active" disabled="tab.disabled">
+							<tab-heading><a href="{{tab.href}}" ng-click="reloadPage(tab.tabName)"><i class="{{tab.icon}}"></i> {{tab.title}}</a></tab-heading>
+							<div ng-include src="tab.content + tab.url"></div>
+						</tab>
+					</tabset>
+				</div>
+
+			</section><!-- /.content -->
+		</aside><!-- /.right-side -->
+	</div>
+	<% include partials/javascripts.ejs %>
+</body>
+</html>

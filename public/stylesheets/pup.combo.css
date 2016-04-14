@@ -1,0 +1,397 @@
+/* This is the main stylesheet for the Media Uploader aka PUP */
+html, body {min-height:0 !important;background-color: white !important;}
+body{background-color: white !important;}
+.my-drop-zone { border: dotted 3px lightgray; color:gray;}
+.ng-file-over { border: dotted 3px red; } /* Default class applied to drop zones on over */
+.another-file-over-class { border: dotted 3px green; }
+
+
+.img-thumb{
+	max-height:100px;max-width:200px;
+}
+
+.img-margin{
+	margin:5px;
+}
+
+.glyphicon-pic-size{
+	font-size:115px;
+}
+
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 999px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
+
+.word-wrap{
+    word-wrap:break-word;
+}
+
+.img-max-width{
+    max-width:100%;
+    
+    
+}
+
+/*bootstrap css for error validation*/
+
+.ng-invalid.ng-dirty.radio,
+.ng-invalid.ng-dirty.checkbox{
+  color: #a94442;
+} 
+.ng-invalid.ng-dirty.form-control {
+  border-color: #a94442;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+}
+.ng-invalid.ng-dirty.form-control:focus {
+  border-color: #843534;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #ce8483;
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #ce8483;
+}
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+
+.white-space-normal{
+  white-space: normal;
+  }
+
+
+/*loading css - See more at: http://cssload.net/#sthash.vwuiVny0.dpuf */
+.loading{
+	position: absolute;
+	height: 300px;
+	top: 40%;
+	left: 50%;
+	line-height: 300px;
+	text-align: center;
+	clear: both;
+}
+
+.containerLoading{
+	opacity: 0.1;
+	filter: alpha(opacity=10);
+
+}
+
+#circleG{
+width:149.33333333333334px;
+}
+
+.circleG{
+background-color:#FFFFFF;
+float:left;
+height:32px;
+margin-left:17px;
+width:32px;
+-moz-animation-name:bounce_circleG;
+-moz-animation-duration:1.9500000000000002s;
+-moz-animation-iteration-count:infinite;
+-moz-animation-direction:linear;
+-moz-border-radius:21px;
+-webkit-animation-name:bounce_circleG;
+-webkit-animation-duration:1.9500000000000002s;
+-webkit-animation-iteration-count:infinite;
+-webkit-animation-direction:linear;
+-webkit-border-radius:21px;
+-ms-animation-name:bounce_circleG;
+-ms-animation-duration:1.9500000000000002s;
+-ms-animation-iteration-count:infinite;
+-ms-animation-direction:linear;
+-ms-border-radius:21px;
+-o-animation-name:bounce_circleG;
+-o-animation-duration:1.9500000000000002s;
+-o-animation-iteration-count:infinite;
+-o-animation-direction:linear;
+-o-border-radius:21px;
+animation-name:bounce_circleG;
+animation-duration:1.9500000000000002s;
+animation-iteration-count:infinite;
+animation-direction:linear;
+border-radius:21px;
+}
+
+#circleG_1{
+-moz-animation-delay:0.39s;
+-webkit-animation-delay:0.39s;
+-ms-animation-delay:0.39s;
+-o-animation-delay:0.39s;
+animation-delay:0.39s;
+}
+
+#circleG_2{
+-moz-animation-delay:0.9099999999999999s;
+-webkit-animation-delay:0.9099999999999999s;
+-ms-animation-delay:0.9099999999999999s;
+-o-animation-delay:0.9099999999999999s;
+animation-delay:0.9099999999999999s;
+}
+
+#circleG_3{
+-moz-animation-delay:1.1700000000000002s;
+-webkit-animation-delay:1.1700000000000002s;
+-ms-animation-delay:1.1700000000000002s;
+-o-animation-delay:1.1700000000000002s;
+animation-delay:1.1700000000000002s;
+}
+
+@-moz-keyframes bounce_circleG{
+0%{
+}
+
+50%{
+background-color:#000000}
+
+100%{
+}
+
+}
+
+@-webkit-keyframes bounce_circleG{
+0%{
+}
+
+50%{
+background-color:#000000}
+
+100%{
+}
+
+}
+
+@-ms-keyframes bounce_circleG{
+0%{
+}
+
+50%{
+background-color:#000000}
+
+100%{
+}
+
+}
+
+@-o-keyframes bounce_circleG{
+0%{
+}
+
+50%{
+background-color:#000000}
+
+100%{
+}
+
+}
+
+@keyframes bounce_circleG{
+0%{
+}
+
+50%{
+background-color:#000000}
+
+100%{
+}
+
+} 
+
+
+@media screen and (max-width: 320px) {
+
+  .btn-done{
+     float: none !important; 
+     margin-top: 5px; 
+  }
+
+}
+
+.sub_reqText {
+color: red;
+}
+
+
+/* jquery.Jcrop.css v0.9.12 - MIT License */
+/*
+  The outer-most container in a typical Jcrop instance
+  If you are having difficulty with formatting related to styles
+  on a parent element, place any fixes here or in a like selector
+
+  You can also style this element if you want to add a border, etc
+  A better method for styling can be seen below with .jcrop-light
+  (Add a class to the holder and style elements for that extended class)
+
+  NOTE: This stylesheet is used for the Image Crop Tool in the Media Uploader and in the Submissions View in the Admin Tool
+
+*/
+.jcrop-holder {
+  direction: ltr;
+  text-align: left;
+}
+/* Selection Border */
+.jcrop-vline,
+.jcrop-hline {
+  background: #ffffff /*url("Jcrop.gif")*/;
+  font-size: 0;
+  position: absolute;
+}
+.jcrop-vline {
+  height: 100%;
+  width: 1px !important;
+}
+.jcrop-vline.right {
+  right: 0;
+}
+.jcrop-hline {
+  height: 1px !important;
+  width: 100%;
+}
+.jcrop-hline.bottom {
+  bottom: 0;
+}
+/* Invisible click targets */
+.jcrop-tracker {
+  height: 100%;
+  width: 100%;
+  /* "turn off" link highlight */
+  -webkit-tap-highlight-color: transparent;
+  /* disable callout, image save panel */
+  -webkit-touch-callout: none;
+  /* disable cut copy paste */
+  -webkit-user-select: none;
+}
+/* Selection Handles */
+.jcrop-handle {
+  background-color: #333333;
+  border: 1px #eeeeee solid;
+  width: 7px;
+  height: 7px;
+  font-size: 1px;
+}
+.jcrop-handle.ord-n {
+  left: 50%;
+  margin-left: -4px;
+  margin-top: -4px;
+  top: 0;
+}
+.jcrop-handle.ord-s {
+  bottom: 0;
+  left: 50%;
+  margin-bottom: -4px;
+  margin-left: -4px;
+}
+.jcrop-handle.ord-e {
+  margin-right: -4px;
+  margin-top: -4px;
+  right: 0;
+  top: 50%;
+}
+.jcrop-handle.ord-w {
+  left: 0;
+  margin-left: -4px;
+  margin-top: -4px;
+  top: 50%;
+}
+.jcrop-handle.ord-nw {
+  left: 0;
+  margin-left: -4px;
+  margin-top: -4px;
+  top: 0;
+}
+.jcrop-handle.ord-ne {
+  margin-right: -4px;
+  margin-top: -4px;
+  right: 0;
+  top: 0;
+}
+.jcrop-handle.ord-se {
+  bottom: 0;
+  margin-bottom: -4px;
+  margin-right: -4px;
+  right: 0;
+}
+.jcrop-handle.ord-sw {
+  bottom: 0;
+  left: 0;
+  margin-bottom: -4px;
+  margin-left: -4px;
+}
+/* Dragbars */
+.jcrop-dragbar.ord-n,
+.jcrop-dragbar.ord-s {
+  height: 7px;
+  width: 100%;
+}
+.jcrop-dragbar.ord-e,
+.jcrop-dragbar.ord-w {
+  height: 100%;
+  width: 7px;
+}
+.jcrop-dragbar.ord-n {
+  margin-top: -4px;
+}
+.jcrop-dragbar.ord-s {
+  bottom: 0;
+  margin-bottom: -4px;
+}
+.jcrop-dragbar.ord-e {
+  margin-right: -4px;
+  right: 0;
+}
+.jcrop-dragbar.ord-w {
+  margin-left: -4px;
+}
+/* The "jcrop-light" class/extension */
+.jcrop-light .jcrop-vline,
+.jcrop-light .jcrop-hline {
+  background: #ffffff;
+  filter: alpha(opacity=70) !important;
+  opacity: .70!important;
+}
+.jcrop-light .jcrop-handle {
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  background-color: #000000;
+  border-color: #ffffff;
+  border-radius: 3px;
+}
+/* The "jcrop-dark" class/extension */
+.jcrop-dark .jcrop-vline,
+.jcrop-dark .jcrop-hline {
+  background: #000000;
+  filter: alpha(opacity=70) !important;
+  opacity: 0.7 !important;
+}
+.jcrop-dark .jcrop-handle {
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  background-color: #ffffff;
+  border-color: #000000;
+  border-radius: 3px;
+}
+/* Simple macro to turn off the antlines */
+.solid-line .jcrop-vline,
+.solid-line .jcrop-hline {
+  background: #ffffff;
+}
+/* Fix for twitter bootstrap et al. */
+.jcrop-holder img,
+img.jcrop-preview {
+  max-width: none !important;
+}

@@ -1,0 +1,53 @@
+<!-- Admin View -->
+<!-- General Form Settings in Create Form -->
+
+<div class="panel panel-default" ng-init="init('<%= user._id %>','<%= user.account.acctId %>','<%= user.account.role %>','<%= account.type %>')">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><a href="#" ng-click="formActivity.isCollapsed=!formActivity.isCollapsed"><div class="row"><div class="col-xs-11">Schedule Form Activity</div><div class="col-xs-1"> <span class="fa fa-chevron-down"></span></div></div></a></h3>
+                    </div>
+
+                    <div class="panel-body" ng-hide="formActivity.isCollapsed">                                                                
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>Status<span class="sub_reqText">*</span> <a href="#" tooltip-placement="right" tooltip="{{tooltips.status}}" tabindex="-1"><i class="fa fa-info-circle"></i></a></label>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio"  ng-model="newSchema.active" ng-value="true">
+                                        Active
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio"  ng-model="newSchema.active" ng-value="false">
+                                        Inactive
+                                    </label>
+                                </div>                                                    
+                            </div>   
+
+                            
+                            <div class="col-md-9">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Active Start Date <a href="#" tooltip-placement="right" tooltip="{{tooltips.activeStartDate}}" tabindex="-1"><i class="fa fa-info-circle"></i></a> <span class="optional-text">(Optional)</span></label>                                
+                                        <p class="input-group"><input type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="newSchema.activeStartDate" ng-change="updateMinActiveEndDate()" is-open="sdOpened" close-text="Close" placeholder="Start Date"><span class="input-group-btn"><button type="button" class="btn btn-default" ng-click="$event.preventDefault(); $event.stopPropagation(); sdOpened = true;" ><span class="fa fa-calendar"></span></button></span></p> 
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Active End Date <a href="#" tooltip-placement="right" tooltip="{{tooltips.activeEndDate}}" tabindex="-1"><i class="fa fa-info-circle"></i></a> <span class="optional-text">(Optional)</span></label>                                
+                                        <p class="input-group"><input type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="newSchema.activeEndDate" is-open="edOpened" min-date="minActiveEndDate" close-text="Close" placeholder="End Date"><span class="input-group-btn"><button type="button" class="btn btn-default" ng-click="$event.preventDefault(); $event.stopPropagation(); edOpened = true;"><span class="fa fa-calendar"></span></button></span></p> 
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label>Inactive Form Message <a href="#" tooltip-placement="right" tooltip="{{tooltips.inactiveMsg}}" tabindex="-1"><i class="fa fa-info-circle"></i></a> <span class="optional-text">(Optional)</span></label>
+                                        <textarea class="form-control" placeholder="Default: This form is currently not accepting submissions." ng-model="newSchema.inactiveMessage"></textarea> 
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>                                    
+                        
+                        
+                       
+
+                    </div>
+                </div>

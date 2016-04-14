@@ -1,0 +1,35 @@
+<!-- Admin View -->
+<!-- Add a new field when creating a form -->
+<div class="row">
+    <div class="col-sm-12">   
+        <br ng-show="newSchema.appFormFields.length == 0">
+        <p>
+            <div class="btn-group add-field" dropdown>
+                <button type="button" class="btn btn-medium btn-primary" ng-click="newFormField(fieldType.types[0])">+ Add Field</button>
+                <button type="button" class="btn btn-primary dropdown-toggle" dropdown-toggle>
+                    <span class="caret"></span>
+                    <span class="sr-only">Split button!</span>
+                </button>
+
+                <ul class="dropdown-menu" role="menu">
+                    <li>   
+                        <ul class="list-unstyled col-sm-6">
+                            <li role="presentation" class="dropdown-header">Standard</li>
+                            <li ng-repeat="type in fieldType.types|filter:{groupName:'Standard'}"><a href="#" ng-click="newFormField(type)">{{type.readable}}</a></li>
+                            <li role="presentation" class="dropdown-header">Uploaders</li>
+                            <li ng-repeat="type in fieldType.types|filter:{groupName:'Uploaders'}"><a href="#" ng-click="newFormField(type)">{{type.readable}}</a></li>
+                        </ul>    
+                    </li>
+                    <li>
+                        <ul class="list-unstyled col-sm-6">
+                            <li role="presentation" class="dropdown-header">Date & Time</li>
+                            <li ng-repeat="type in fieldType.types|filter:{groupName:'Date & Time'}"><a href="#" ng-click="newFormField(type)">{{type.readable}}</a></li>
+                            <li role="presentation" class="dropdown-header">Custom</li>
+                            <li ng-repeat="type in fieldType.types|filter:{groupName:'Custom'}"><a href="#" ng-click="newFormField(type)">{{type.readable}}</a></li>
+                        </ul>                                                       
+                    </li>
+                </ul>
+            </div>                                     
+        </p>
+    </div>
+</div>

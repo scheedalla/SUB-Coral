@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<!-- VIP Page: The dynamically generated hosted form-->
+<!-- Path: /hosted/:formId-->
+
+<html ng-app="hostedApp" lang="en">
+<head>
+	<title>SUB | <%= appId %></title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="<%= socialTitle %>" />
+	<meta property="og:type" content="website" />
+	<meta property="og:description" content="<%= socialDescription %>" />
+	<meta property="og:image" content="<%= socialURL %>" />
+	<% include partials/css.ejs %>
+	<!-- <link href="/javascripts/resources/jReject/css/jquery.reject.css" rel="stylesheet" type="text/css" /> -->
+</head>
+
+<body ng-init="init('<%= appId %>', '<%= subId %>', '<%= token %>')" ng-controller="HostedController" ng-cloak>
+	<!--[if lte IE 8]>
+        <div class="alert alert-warning text-center" style="margin-left:0px;"><h2>Unfortunately, this web page is not supported in this browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience!</h2></div>
+        <![endif]-->
+
+        <div class="container-fluid" ng-hide="tokenTrue">
+        	<span class="col-md-12">
+        		<h3>You have already submitted your response.</h3>
+        	</span>
+        </div>
+
+        <div class="container-fluid" id="hostedForm" ng-show="tokenTrue">
+
+        	<div class="hosted-brand-image" ><img ng-src="{{application.logoURL}}" onerror="this.style.display='none'" alt="Brand Logo" ng-show="application.logoURL"></div>
+
+        	<div ng-show="hasError" class="errormsg">Oops! There is a problem with the form, please check and correct below.</div>
+        	<h1> <span ng-show="application.platformTitle">{{application.platformTitle}}</span><span ng-show="!application.platformTitle">{{application.appName}}</span> <span ng-show="application.isDraft">(DRAFT)</span></h1>
+        	<h4 ng-bind-html="application.appDescriptionSafe" ng-hide="formSubmitted"></h4>
+        	<h5 ng-hide="application.active">{{application.inactiveMessage}}</h5>
+        	<form role="form" name="hosted" class="form" ng-submit="submitForm()" novalidate ng-show="application.active" ng-hide="formSubmitted">
+        		<div class="hosted row buttons" data-spy="affix"  data-offset-top="20" ng-show="application.submissionEdit">
+        			<div class="col-sm-12">
+        				<button type="submit" class="btn btn-warning" ng-click="submission.submitted=false; submission.isDraft=true">Save as Draft</button>
+        				<span ng-show="!application.messageNextToDraftBtn">Click to save your <b>{{application.appName}}</b> submission to be edited later.</span>
+						<span ng-show="application.messageNextToDraftBtn" ng-bind-html="application.messageNextToDraftBtnSafe"></span>
+
+        			</div>
+        		</div>
+
+        		<h5 class='text-danger'>*REQUIRED FIELDS</h5>
+        		<input class='sub_appInfo' type='hidden' name='appId.appInfo' value='{{application._id}}' ng-model="submission.appId">
+        		<input class='sub_appInfo' type='hidden' name='appId.accountId' value='{{application.accountId}}' ng-model="submission.accountId">
+        		<input class='sub_appInfo' type='hidden' name='applicationName.appInfo' value='{{application.appName}}'>
+        		<input class='sub_appInfo' type='hidden' name='approved.appInfo' value='{{application.autoApproved}}' ng-model="submission.approved">
+        		<input class='appInfo' type='hidden' name='customerId.appInfo' value='{{application.customerId}}'ng-model="submission.customerId">
+
+        		<sub-formfield form-id="application._id" content="field" model="hostedOutput[field.uniqueId]" submission="submission" application="application" ng-repeat="field in application.appFormFields" submitted="submitted" index="$index"> </sub-formfield>
+
+        		<div class="text-danger" ng-show="captchaNotChecked">Please check the box below to verify that you are not a robot. </div>
+        		<no-captcha
+        		g-recaptcha-response="gRecaptchaResponse"
+        		theme='light'
+        		control="noCaptchaControl"
+        		site-key="6Ld_EAQTAAAAAEP3OAsStvby187x6vTFniNYM8qD" ng-if="application.hasCaptcha">
+        	</no-captcha>
+        	<br>
+
+        	<button type="submit" class="btn btn-warning" ng-click="submission.submitted=false; submission.isDraft=true" ng-show="application.submissionEdit">Save as Draft</button>
+
+        	<button type="submit" ng-click="submission.isDraft=false; submission.submitted=true" class="btn btn-primary" ng-disabled="application.appFormFields.length==0">{{application.callToAction}}</button>
+
+        	<div ng-show="application.policyURL" class="privacy">
+        		<a href="{{application.policyURL}}" target="_blank">Privacy Policy</a>
+        	</div>
+
+        	<div ng-show="application.tosURL" class="privacy">
+        		<a href="{{application.tosURL}}" target="_blank">Terms of Service</a>
+        	</div>
+
+        	<div class="privacy">
+        		<a href="" target="_blank">Contact Us</a>					
+        	</div>
+
+        </form>
+
+			<div class="confirmation" ng-show="formSubmitted && !submission.isDraft">
+				<h4><span ng-bind-html="htmlConfirmationMessage"></span></h4><br><br>
+  			</div>
+        	<h4 ng-show="application.submissionEdit && editSubmissionLink && submission.isDraft">Save this link! You can return to edit your submission here<span ng-show="application.active && application.activeEndDate"> until {{application.activeEndDate  | date:'MM/dd/yyyy'}}</span>: <a href="{{editSubmissionLink}}" target="_blank">{{editSubmissionLink}}</a></h4>
+        	<div class="panel panel-primary" ng-if="application.socialShareButtons"  ng-show="formSubmitted && !submission.isDraft">
+        		<div class="panel-heading">
+        			<h3>Share this form</h3>
+        		</div>
+        		<div class="panel-body">
+        			<% include partials/social-media.ejs %>
+        		</div>
+        	</div>
+        </div>
+    </div>
+
+    <br>
+    <br>
+
+
+    <!-- <pre> -->
+
+    <!-- {{application | json}}  -->
+    	<!-- <br><br> -->
+    	<!-- {{submission| json}} -->
+
+    <!-- </pre> -->
+
+
+    <% include partials/javascripts.ejs %>
+    <script src="/javascripts/hosted.min.js"></script>
+</body>
+</html>

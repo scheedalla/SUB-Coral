@@ -1,0 +1,256 @@
+<!-- VIP page: The Submissions View on the /admin page-->
+<!-- Path: /approval/:formId-->
+<div class="" id="top" ng-controller="AppCtrl" ng-class="{containerLoading: isLoading}">
+
+	<div ng-init="init('<%= user._id %>','<%= user.account.acctId %>','<%= user.account.role %>','<%= account.type %>');appApprove('<%= appId %>')"></div>
+	<!-- <div ng-init=""></div> -->
+
+	<!-- Modals Moved to EJS Files / Use Modal Service -->
+		<% include partials/modal-compare.ejs %>
+		<% include partials/modal-tags.ejs %>
+		<% include partials/modal-saveSearch.ejs %>
+		<% include partials/modal-useSaveSearch.ejs %>
+		<% include partials/modal-editImage.ejs %>
+		<% include partials/modal-viewDocument.ejs %>
+	<!-- Modals Moved to EJS Files / Use Modal Service -->
+
+	<!-- Start: Subnavigation-->
+	<div class="row">
+	<div class="col-lg-6 text-center">
+		<div class="row">
+		<div class="col-xs-4 right-grey-border">
+			<a href="#" class="dropdown-toggle primary" data-toggle="dropdown"><h4 style="word-wrap:normal;" class="toolbar"><i class="fa fa-filter"></i> Filter By Tags</h4></a>
+			<ul class="dropdown-menu pull-right">
+				<li role="presentation" class="dropdown-header text-left" ng-hide="app.autoApproved">by status</li>
+				<li ng-hide="app.autoApproved">
+					<a href="" class="text-left" ng-click="setfilterApproved(true,1); $parent.pag.bigCurrentPage = 1">Approved <span ng-show="filterKey=='approved' && filterVal==true" class="fa fa-check "></span></a>
+
+				</li>
+				<li ng-hide="app.autoApproved">
+					<a class="text-left" href="" ng-click="setfilterApproved(false,1);$parent.pag.bigCurrentPage = 1">Needs Approval <span ng-show="filterKey=='approved' && filterVal==false" class="fa fa-check "></span></a>
+
+				</li>
+				<li role="presentation" class="dropdown-header text-left">by tag</li>
+				<li ng-repeat="tag in app.tags track by $index">
+					<a class="text-left" href="" ng-click="setfilterTagVals(tag,1); pag.bigCurrentPage = 1">{{tag}} <span ng-show="inArray(tag, filterTagVals)" class="fa fa-check" ng-hide="!filterTagVals || !inArray(tag, filterTagVals)"></span></a>
+
+				</li>
+			</ul>
+		</div>
+		<div class="col-xs-4 right-grey-border">
+			<a href="#" class="primary" ng-click="bulkActions.on=!bulkActions.on"><h4 class="toolbar"><i class="fa fa-tags"></i>Bulk Actions</h4></a>
+		</div>
+		<div class="col-xs-4 right-grey-border">
+			<a href="#" class="primary" ng-click="manageTagsModal(error=false)"><h4 class="toolbar"><i class="fa fa-tags"></i> Add/Delete Tags</h4></a>
+		</div>
+	</div>
+	</div>
+	<div class="col-lg-6 text-center">
+		<div class="row">
+			<div class="col-xs-4 right-grey-border">
+				<a ng-click="searchTools=!searchTools;basicSearch=true;advSearch=false;dateSearch=false;" href="#"><h4 class="toolbar"><i class="fa fa-search"></i> Search</h4></a>
+			</div>
+		<div class="col-xs-4 right-grey-border" ng-hide="!msSaveBlob && !supportDownload">
+			<a href="" ng-click="subsToCSV()"><h4 class="toolbar"><i class="fa fa-download"></i> Export as Spreadsheet</h4></a><!--<span ng-hide="supportsHTML5Blob"><small>This browser does not support downloading CSV files</small></span> -->
+		</div>
+		<div class="col-xs-4">
+			<a href="#" class="primary"><h4 ng-click="compareSubmissionsModal()" class="toolbar"><i class="fa fa-crosshairs"></i> Compare Submissions</h4></a>
+		</div>
+	</div>
+	</div>
+</div>
+<!--End: Subnavigation-->
+<!-- Bulk Actions -->
+<div ng-show="bulkActions.on" class="row search-tools">
+	<div class="search-tools-close"><a href="#" ng-click="bulkActions.on=false;" tooltip-placement="bottom" tooltip="Hide bulk actions"><i class="fa fa-close close-color"></i></a></div>
+	<div class="col-sm-2">
+		<h4>Apply changes to multiple submissions</h4>
+	</div>
+	<div class="col-sm-3">
+		<select tag-ctrl
+			multiple
+			ng-model="bulkActions.tags"
+			ng-options="value as value for value in app.tags"
+			reply-to="application.tags"
+			chosen
+			data-placeholder="Select some options"
+			class="form-control">
+		</select>
+	</div>
+	<div class="col-sm-3">
+		<button ng-click="bulkActions.applyTags()" class="btn btn-primary" ng-disabled="!bulkActions.tags || !bulkActions.subs">Apply Tags</button>
+	</div>
+	<div class="col-sm-3">
+		<button ng-click="bulkActions.removeTags()" class="btn btn-danger" ng-disabled="!bulkActions.tags || !bulkActions.subs">Remove Tags</button>
+	</div>
+	<!-- <div class="col-sm-3">
+		<button ng-click="bulkActions.deleteSubs()" class="btn btn-primary" ng-disabled="!bulkActions.subs">Delete Submissions</button>
+	</div> -->
+</div>
+<!--END Bulk Actions -->
+<!-- Search Toolbar -->
+<div class="search-tools" ng-show="searchTools">
+	<!-- Basic Search -->
+	<div class="search-tools-close"><a href="#" ng-click="searchTools=false;" tooltip-placement="bottom" tooltip="Hide search"><i class="fa fa-close close-color"></i></a></div>
+	<div ng-hide="advSearch" ng-show="basicSearch" class="row">
+		<div class="col-sm-7">
+			<query-single fields="searchFields" group="filter.group"></query-single>
+		</div>
+		<div class="col-sm-4">
+			<button ng-click="searchAll(null,null,1); pag.bigCurrentPage=1" class="btn btn-primary" ng-disabled="filter.group.rules[0].field=='' || filter.group.rules[0].data==''">Search</button> <a class="btn btn-link" ng-click="advSearch=true;basicSearch=false;dateSearch=false">Advanced</a> <a href="#" ng-click="saveSearchModal(error=false)" class="btn btn-link" ng-show="showSearchCond">Save Search</a>
+			<button ng-click="useSaveSearchModal()" class="btn btn-link">Use a Saved Search</button> <a href="#" ng-click="getSubs();clearRules(filter.group.rules);" class="btn btn-link" ng-show="showSearchCond" ng-init="showSearchCond=false">Clear Search</a>
+		</div>
+	</div>
+	<!-- END: Basic Search -->
+
+	<!-- Advanced Search -->
+	<div ng-hide="basicSearch" ng-show="advSearch">
+		<div class="row">
+			<div class="col-sm-12">
+				<query-builder test="searchFields" subSearch="subSearch" group="filter.group"></query-builder>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-12">
+				<button ng-click="searchAll(null,null,1); pag.bigCurrentPage=1" class="btn btn-primary">Search</button> <a class="btn btn-link" ng-click="advSearch=false;basicSearch=true;dateSearch=false;cleanupRules(filter.group.rules);clearSearch()">Basic</a> <a href="#" ng-click="saveSearchModal(error=false)" class="btn btn-link" ng-show="showSearchCond">Save Search</a>
+				<button ng-click="useSaveSearchModal()" class="btn btn-link">Use a Saved Search</button> <a href="#" ng-click="getSubs();clearRules(filter.group.rules);" class="btn btn-link" ng-show="showSearchCond" ng-init="showSearchCond=false">Clear Search</a>
+			</div>
+		</div>
+	</div>
+	<!--END: Advanced Search -->
+</div>
+	<!-- Submissions Toolbar-->
+	<div class="row" ng-show="subs.length > 0">
+		<div class="col-lg-12 text-left">
+			<span ng-hide="" class="">
+				<h4> {{info.totalSubs}} Submission<span ng-show="subs.length!=1">s</span>
+					<span ng-hide="app.autoApproved">:
+						<span class="text-approved">{{info.totalApproved}} Approved</span>
+						<span class="text-need-approval">{{info.totalUnapproved}} Need Approval</span>
+					</span>
+				</h4>
+			</span>
+		<div class="alert alert-warning" ng-show="message" >
+			{{message}}
+		</div>
+
+	</div>
+</div>
+<!-- END Submissions Toolbar-->
+
+
+
+<% include partials/query-single.ejs %>
+<% include partials/query-builder.ejs %>
+<!-- <pre>{{filter.group.rules | json}}</pre> -->
+
+<!-- END Search Toolbar -->
+
+<!-- Filter and Search Conditions-->
+<div class="row" ng-show="(filterTagVals.length>0 || filterKey != ''|| showSearchCond) && subs.length>0" style="margin-top:20px;">
+	<div class="col-sm-3">
+		<h4><strong>Found {{pag.bigTotalItems}} Result<span ng-hide="pag.bigTotalItems==1">s</span>!</strong></h4>
+	</div>
+	<div class="col-sm-9 text-bold">
+		Filtering by
+		<!-- Approval/Need Approval -->
+		<button type="button" class="btn btn-warning" ng-hide="filterKey == ''" ng-click="filterActive=false; filterVal=''; filterKey=''; $parent.pag.bigCurrentPage = 1; pag.bigTotalItems = (subs|togglableFilter:filterKey:filterVal:filterActive|tagsFilter:filterTagVals).length">
+			<strong><span ng-show="filterKey=='approved' && filterVal==true">Approved</span><span ng-show="filterKey=='approved' && filterVal==false">Need Approval</span> <i class="fa fa-close"></i></strong>
+		</button>
+
+		<!-- Tags -->
+			<span ng-repeat="tag in app.tags track by $index">
+				<a class="text-left btn btn-warning" href="" ng-click="setfilterTagVals(tag,1);$parent.pag.bigCurrentPage = 1;" ng-show="inArray(tag, filterTagVals)" ><strong>{{tag}} <span class="fa fa-close"></span></strong></a>
+			</span>
+			<br><br>
+
+			<span ng-show="(showSearchCond || dateSearch)" >Searched for </span>
+			<!-- Search string-->
+			<button type="button" class="btn btn-info" ng-click="getSubs();clearRules(filter.group.rules);" ng-show="showSearchCond && !dateSearch">
+				<strong> <span ng-repeat="rule in filter.group.rules">{{rule.field.name}} {{rule.condition | condition}} <span ng-show="rule.field.type=='date' || rule.field.type=='createdDate'">{{rule.data | date:'mediumDate'}}</span><span ng-hide="rule.field.type=='date' || rule.field.type=='createdDate'">{{rule.data}}</span><span ng-hide="$last"> {{filter.group.operator}} </span></span> <i class="fa fa-close"></i></strong>
+			</button>
+	</div>
+</div>
+<!-- END Filter and Search Conditions-->
+
+<!-- Pagination-->
+
+<div class="row" ng-show="subs.length>0">
+	<div class="col-lg-12 text-left">
+		<div ng-show="pag.bigTotalItems > pag.itemsPerPage">
+		<div ng-hide="pag.bigTotalItems == 0 || pag.showAll">
+			<pagination ng-click="goToTop(); paginate()" total-items="pag.bigTotalItems" ng-model="pag.bigCurrentPage" max-size="pag.maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="pag.numPages" items-per-page="pag.itemsPerPage"></pagination>
+			<br>Showing {{((pag.bigCurrentPage - 1)*pag.itemsPerPage)+1}} to <span ng-show="pag.bigCurrentPage*pag.itemsPerPage <= pag.bigTotalItems">{{pag.bigCurrentPage*pag.itemsPerPage}}</span><span ng-show="pag.bigCurrentPage*pag.itemsPerPage > pag.bigTotalItems">{{pag.bigTotalItems}}</span> of {{pag.bigTotalItems}} | Page {{pag.bigCurrentPage}} of {{pag.numPages}}
+			<span ng-show="pag.bigTotalItems >= pag.otherItemsPerPage">| Show
+				<a class="link" ng-click="pag.temp=pag.itemsPerPage;pag.itemsPerPage=pag.otherItemsPerPage;pag.bigCurrentPage=1;pag.otherItemsPerPage=pag.temp;paginate();" style="cursor:pointer;">{{pag.otherItemsPerPage}}</a>
+				per page
+			</span>
+			<span ng-show="pag.bigTotalItems <= 100">|</span><a href="#" class="text-left" ng-click="pag.showAll=true;pag.itemsPerPage=100;pag.bigCurrentPage=1;paginate();" ng-show="pag.bigTotalItems <= 100"> Show all</a>
+		</div>
+	</div>
+		<a href="#" ng-show="pag.showAll" ng-click="pag.showAll=false;pag.itemsPerPage=10;paginate();">Show less</a>
+	</div>
+</div>
+<!-- END Pagination-->
+
+<!-- Loader -->
+<div class="row text-center" ng-hide="hasNoSubs || subs.length > 0 || showSearchCond ">
+	<div class="col-sm-12">
+		<!-- <em>Loading...</em><br><br> -->
+		<img src="/images/ajax-loader.gif" >
+	</div>
+</div>
+<!-- END Loader -->
+<div class="row" ng-hide="subs.length > 0 || showSearchCond || !hasNoSubs">
+	<em>There are currently no submissions.</em><br><br>
+</div>
+<div class="row text-center" ng-show="subs.length == 0 && showSearchCond">
+	<em>There are currently no submissions that match your query.</em><br><br>
+</div>
+<div class="row text-center" ng-show="isExportingtoSpreadsheet">
+	<em>Currently exporting as spreadsheet...</em><br><br>
+</div>
+<!--bulk select and deselect-->
+<div class="row text-center"  ng-show="bulkActions.on">
+	<div class="col-sm-12">
+		<div class="col-sm-1" ng-class="{'right-grey-border' : bulkActions.subs.length > 0}">
+			<a href="" ng-click="bulkActions.selectAllVis()" >
+			<h4 class="toolbar">Select All Visible</h4>
+			</a>
+		</div>
+		<div class="col-sm-1" ng-show="bulkActions.subs.length > 0">
+			<a href="" ng-click="bulkActions.deselectAll()" >
+				<h4 class="toolbar">Deselect All</h4>
+			</a>
+		</div>
+	</div>
+</div>
+<!--END bulk select and deselect-->
+
+
+<!-- Submission EJS Goes Here -->
+<% include partials/approval-submission.ejs %>
+<!-- Submission EJS Goes Here -->
+
+<!-- Pagination-->
+
+<div class="row" ng-show="subs.length>0">
+	<div class="col-lg-12 text-left">
+		<div ng-show="pag.bigTotalItems > pag.itemsPerPage">
+		<div ng-hide="pag.bigTotalItems == 0 || pag.showAll">
+			<pagination ng-click="goToTop(); paginate()" total-items="pag.bigTotalItems" ng-model="pag.bigCurrentPage" max-size="pag.maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="pag.numPages" items-per-page="pag.itemsPerPage"></pagination>
+			<br>Showing {{((pag.bigCurrentPage - 1)*pag.itemsPerPage)+1}} to <span ng-show="pag.bigCurrentPage*pag.itemsPerPage <= pag.bigTotalItems">{{pag.bigCurrentPage*pag.itemsPerPage}}</span><span ng-show="pag.bigCurrentPage*pag.itemsPerPage > pag.bigTotalItems">{{pag.bigTotalItems}}</span> of {{pag.bigTotalItems}} | Page {{pag.bigCurrentPage}} of {{pag.numPages}}
+			<span ng-show="pag.bigTotalItems >= pag.otherItemsPerPage">| Show
+				<a class="link" ng-click="pag.temp=pag.itemsPerPage;pag.itemsPerPage=pag.otherItemsPerPage;pag.bigCurrentPage=1;pag.otherItemsPerPage=pag.temp;paginate();" style="cursor:pointer;">{{pag.otherItemsPerPage}}</a>
+				per page
+			</span>
+			<span ng-show="pag.bigTotalItems <= 100">|</span><a href="#" class="text-left" ng-click="pag.showAll=true;pag.itemsPerPage=100;pag.bigCurrentPage=1;paginate();" ng-show="pag.bigTotalItems <= 100"> Show all</a>
+		</div>
+	</div>
+		<a href="#" ng-show="pag.showAll" ng-click="pag.showAll=false;pag.itemsPerPage=10;paginate();">Show less</a>
+	</div>
+</div>
+<!-- END Pagination-->
+</div>
+<!-- END Submission Data -->
+</div>

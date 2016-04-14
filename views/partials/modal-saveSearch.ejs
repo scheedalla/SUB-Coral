@@ -1,0 +1,34 @@
+<!-- Admin View -->
+<!-- Modal for Save Search -->
+
+<!-- Start Modal Template -->
+<script type="text/ng-template" id="saveSearch.html">
+	<div class="modal-header">
+	    <button type="button" class="close" data-ng-click="modalOptions.close()" aria-hidden="true">Close</button>
+  		<h3>{{modalOptions.headerText}}</h3>
+	</div>
+	<div class="modal-body">
+		<div class="alert alert-danger" ng-show="searchToSave.error" >{{searchToSave.error}} </div>
+			<div>
+				<div class="alert alert-warning" ng-show="searchToSave.overwriteWarning" >
+					You already have a saved search named {{searchToSave.name}}. Would you like to overwrite it?<br>
+					<a class="btn btn-link" type="button" ng-click="searchToSave.overwriteWarning=false;saveSearch(true)" data-dismiss="modal" aria-hidden="true">Yes</a>
+					<a class="btn btn-link" type="button" ng-click="searchToSave.overwriteWarning=false">No (Choose a different name)</a>
+				</div>
+				<div class="alert success-warning" ng-show="searchToSave.success" >
+					This search has been saved. You can apply it by clicking on "Use Saved Search" in the search toolbar.<br>
+		
+				</div>
+				<form ng-submit="saveSearch(false)" ng-hide="searchToSave.success">
+					<input type="text" ng-model="searchToSave.name" placeholder="Name this search" class="form-control" />
+					<br>
+					<button class="btn btn-primary">Save</button>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div class="modal-footer">
+	  <button class="btn btn-primary" data-ng-click="modalOptions.ok();">Close</button>
+	</div>
+</script>
+<!-- End Modal Template -->

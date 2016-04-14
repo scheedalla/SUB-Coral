@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<!-- If user is logged in and they must reset their password-->
+<!-- Path: /changePass-->
+<html ng-app="profile">
+<!-- views/profile.ejs -->
+<head>
+    <title>Change Password</title>
+	<% include partials/css.ejs %>
+</head>
+
+<body ng-controller="SettingsCtrl"  ng-cloak class="skin-blue">
+        <% include partials/nav-new.ejs %>
+
+        <div class="wrapper row-offcanvas row-offcanvas-left" ng-controller="AppCtrl">
+        <div ng-init="init('<%= user._id %>');page='profile'"></div>
+		<div ng-init="reset('<%= reset %>')"></div>
+            <% include partials/nav-left.ejs %>
+            <!-- Right side column. Contains the navbar and content of the page -->
+            <aside class="right-side">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>
+                        Change Password                       
+                    </h1>
+                    <ol class="breadcrumb">
+                        <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+                        <li><a href="/profile">Profile</a></li>
+                        <li class="active">Change Password</li>
+                    </ol>
+                </section>
+
+                <!-- Main content -->
+                <section class="content">
+                    <div class="row">
+				<div class="col-md-12">
+					<div class="box box-solid box-primary" ng-hide="reset">		
+						<br>				
+						<div class="alert alert-danger" ng-show="pass.error" >Error: {{pass.error}} </div>
+					  	<div class="alert alert-success" ng-show="pass.success" ><i class="fa fa-check"></i>Success! {{pass.success}}!  <a href="/profile">Return to your profile.</a></div>
+					  	<br>
+					  	<div class="alert alert-warning" ng-show="pass.change">
+					  		<i class="fa fa-refresh fa-spin"></i>Please Wait. Updating Password Now...
+					  	</div>
+					  	<div class="panel-body">
+					  	<form ng-submit="changePass(false)" name="schema" novalidate role="form" ng-show="!pass.success">		<div class="form-group">
+		                    <label class="control-label">Old Password*</label>
+		                    <input type="password" class="form-control" ng-model="pass.oldPass" name="oldPass" required/>
+		                    </div>			  		
+					  		<div class="form-group">
+					  		<label class="control-label">New Password* <a href="#" tooltip-placement="right" tooltip="Password must have at least 8 characters"><i class="fa fa-info-circle"></i></a></label>
+		                    <input type="password" class="form-control" match="pass.repeatPass" ng-model="pass.newPass" name="newPass" ng-minlength="8" required/>
+		                    <span class="help-block" ng-show="schema.newPass.$dirty && schema.newPass.$error.minlength">Password must have at least 8 characters</span>
+		                    </div>
+		                    <div class="form-group">
+							<label class="control-label">Repeat New Password*</label>
+		                    <input type="password" class="form-control" match="pass.newPass" ng-model="pass.repeatPass" name="repeatPass" ng-minlength="8" required/>
+		                    <span class="help-block" ng-show="schema.repeatPass.$dirty && schema.repeatPass.$error.match && !schema.repeatPass.$error.required">Passwords don't match</span>
+		                    </div>
+		                    
+		                    <button class="btn btn-large btn-primary" type="submit" ng-disabled="schema.$invalid">Change Password</button>
+
+					  	</form>
+					  	</div>
+					</div>
+				</div>				
+			</div>
+
+                </section><!-- /.content -->
+            </aside><!-- /.right-side -->
+        </div>
+
+
+                              
+<% include partials/javascripts.ejs %>
+</body>
+</html>

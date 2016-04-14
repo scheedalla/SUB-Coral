@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html ng-app="admin">
+<head>
+	<title>Rolodex</title>
+	<% include partials/css.ejs %>
+</head>
+<body ng-controller="RolodexCtrl" ng-cloak class="skin-blue">
+	<div loading-indicator ng-show="isLoading || isLoadingHard"></div>
+	<% include partials/nav-new.ejs %>
+	<div class="wrapper row-offcanvas row-offcanvas-left" ng-class="{containerLoading: isLoading || isLoadingHard}">
+		<% include partials/nav-left.ejs %>
+		<div ng-init="init('<%= user._id %>','<%= user.account.acctId %>');page='rolodex'"></div>
+		<!-- Right side column. Contains the navbar and content of the page -->
+		<aside class="right-side">
+			<!-- Content Header (Page header) -->
+			<section class="content-header">
+				<h1>
+					Rolodex
+					<br><small>A directory of all of the end users who have supplied their contact information along with a form submission.</small>
+				</h1>
+				{{application.appName}}
+				<ol class="breadcrumb">
+					<li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+					<li class="active">Rolodex</li>
+				</ol>
+			</section>
+			<!-- Main content -->
+			<section class="content">
+				<div class="table-responsive">
+					<table class="table table-bordered table-hover">
+						<thead>
+							<tr class="active">
+								<th class="text-center">Name</th>
+								<th class="text-center">Email Address</th>
+								<th class="text-center">Phone Number</th>
+								<th class="text-center">Contact User</th>
+							</tr>
+						</thead>
+						<!-- {{rolodex}} -->
+						<tbody>
+							<tr ng-repeat="user in rolodex">
+								<td class="text-center">
+									<span ng-hide="user.cookies.wapoLoginID == null">
+											<!-- <i class="fa fa-users"></i> -->
+									</span>
+									<div ng-show="user.userName == null">
+										<button type="button" class="btn btn-link" ng-click="getUserInfo(user)" data-toggle="modal" data-target="#rolodexModal">Name N/A</button>
+									</div>
+									<div ng-show="user.userName != null">
+										<button type="button" class="btn btn-link" ng-click="getUserInfo(user)" data-toggle="modal" data-target="#rolodexModal">{{user.userName}}</button>
+									</div>
+								</td>
+								<td class="text-center vcenter">
+									<div ng-show="user.emailAddress == null">Email N/A</div>
+									<div ng-show="user.emailAddress != null">{{user.emailAddress}}</div>
+								</td>
+								<td class="text-center vcenter">
+									<div ng-show="user.phoneNumber == null">Phone Number N/A</div>
+									<div ng-show="user.phoneNumber != null">{{user.phoneNumber}}</div>
+								</td>
+								<td class="text-center">
+									<a href="mailto:{{user.emailAddress}}?Subject=Hello!" target="_top" class="btn btn-success">Contact User</a>
+								</td>
+							</tr>
+							<!-- User Modal -->
+		                                <div class="modal fade " id="rolodexModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		                                  <div class="modal-dialog modal-lg">
+		                                    <div class="modal-content">
+		                                        <div class="modal-header">
+		                                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+		                                            <h3 class="modal-title">{{user.userName}}'s Profile</h3>
+		                                        </div>
+		                                      <div class="modal-body row">
+		                                        <div class="col-md-6">
+		                                            <h3>Information</h3>
+		                                            <h5><b>Name:</b> {{user.userName}}</h5>
+		                                            <h5><b>Email Address:</b> {{user.emailAddress}}</h5>
+		                                            <h5><b>Phone Number:</b> {{user.phoneNumber | tel }}</h5>
+		                                        </div>
+		                                        <div class="col-md-6">
+		                                            <h3>Completed Forms</h3>
+		                                            <div ng-repeat="form in user.forms | unique:'_id'">
+		                                                <li><a href="/admin/{{form._id}}" target="blank">{{form._id}}</a></li>
+		                                            </div>
+		                                        </div>
+		                                        <div class="col-md-6" ng-hide="user.cookies.wapoLoginID == null">
+		                                            <h3>Browsing History</h3>
+		                                            <div>
+		                                                <a href="#" target="blank">View Browsing History</a>
+		                                            </div>
+		                                        </div>
+		                                      </div>
+		                                      </div>
+		                                    </div>
+		                                  </div>
+		                                </div>
+		                    <!-- End: User Modal -->
+						</tbody>
+					</table>
+					<div ng-model="accountId" value="<%= user.account.acctId %>"></div>
+		            <div ng-init="getRolodex('<%= accountId %>')"></div>
+				</div>
+			</section><!-- /.content -->
+		</aside><!-- /.right-side -->
+	</div>
+	<% include partials/javascripts.ejs %>
+	<script src="/javascripts/modules.annotated.js"></script>
+</body>
+</html>

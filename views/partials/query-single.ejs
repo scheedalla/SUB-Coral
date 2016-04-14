@@ -1,0 +1,45 @@
+<!-- Admin View -->
+<!-- Basic Search Query Builder Template -->
+
+<!-- BASIC SEARCH-->
+<script type="text/ng-template" id="/querySingleDirective.html">
+            <span ng-repeat="rule in group.rules | orderBy:'index'" class="condition col-sm-12">
+                <div ng-switch="rule.hasOwnProperty('group')">
+                    <div ng-switch-when="true">
+                        <query-builder search-field="searchFields" group="rule.group"></query-builder>
+                    </div>
+                    <div ng-switch-default="ng-switch-default">
+
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <select ng-options="t.name for t in fields | filter:{ type : '!sectionHeader' } | filter:{ type : '!mediaSet' } | filter:{ type : '!mediaSetDoc' } | filter:{ type : '!mediaSetVid' } | filter:{ type : '!mediaSetAudio' }  | filter:{ key : '!approved' }| filter:{type:'!createdDate'} track by t.name" ng-model="rule.field" class="form-control">
+                                     <option value="" >--Select your field--</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-8">
+                                <div ng-show="rule.field.type=='pastDate' || rule.field.type=='futureDate' || rule.field.type=='date'">
+                                    <p class="input-group">
+                                        <input type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="rule.data" is-open="minOpen" close-text="Close" >
+                                         <span class="input-group-btn">
+                                        <button type="button" class="btn btn-default" ng-click="$event.preventDefault(); $event.stopPropagation(); minOpen = true;">
+                                            <span class="fa fa-calendar"></span>
+                                        </button>
+                                    </span>
+                                    </p>
+
+
+                                </div>
+                                <div ng-hide="rule.field.type=='pastDate' || rule.field.type=='futureDate' || rule.field.type=='date'">
+                                    <input style="margin-left: 5px" type="text" ng-model="rule.data" class="form-control"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </span>
+
+
+
+
+
+</script>

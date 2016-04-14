@@ -1,0 +1,689 @@
+<!-- Admin View -->
+<!-- Create Form View in Approval Tool -->
+
+<div class="row" id="top">
+    <div class="top" ng-controller="AppCtrl" id="AppCtrl" ng-cloak>
+       <% include create-buttons.ejs %>
+       <br>
+       <form ng-submit="addNewApp()" name="schema" novalidate>
+        <div ng-init="init('<%= user._id %>');curationSettings.isCollapsed=true;socialSettings.isCollapsed=true;formSettings.isCollapsed=true;emailSettings.isCollapsed=true;collapseBtn=true;formActivity.isCollapsed=true;advFormSettings.isCollapsed=true;"></div>
+        <div ng-init="edit('<%= edit %>')"></div>
+        <div ng-init="appEdit('<%= appId %>')"></div>
+        <div ng-init="getAccount('<%= account %>')"></div>
+        <!-- CREATE PLATFORM-->
+        <div class="createPlatform" ng-class="{'col-sm-12':previewIsHidden, 'col-sm-6': !previewIsHidden}">
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <p class="instructions">Drag and drop fields in the order you want them to appear on the page.
+                    </p>
+                    <button type="button" class="btn btn-info" ng-show="previewIsHidden" ng-click="previewIsHidden = !previewIsHidden;" ng-init="previewIsHidden=true;">Show Preview</button>
+                </div>
+                <div class="panel-body">
+                    <% include name-desc.ejs %>
+                    <div class="row" ng-show="newSchema.appFormFields.length > 0">
+                        <div class="col-md-12 text-right">
+                            <button type="button" ng-click="expandAllFields();collapseBtn=true" class="btn btn-info" ng-hide="collapseBtn">
+                                <span>
+                                    <span class="fa fa-chevron-right"></span> Expand all fields
+                                </span>
+                            </button>
+                            <button type="button" ng-click="collapseAllFields();collapseBtn=false" class="btn btn-info" ng-show="collapseBtn">
+                                <span>
+                                    <span class="fa fa-chevron-down"></span> Collapse all fields
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row colHeader">
+                        <div class="col-xs-1">
+                        </div>
+                        <div class="col-xs-5" style="word-wrap: break-word;">
+                            <strong>Name/Question</strong>
+                        </div>
+                            <div class="col-xs-5">
+                                <strong>Type</strong>
+                            </div>
+                        </div>
+                        <!-- Sorting Starts Here -->
+                        <div id="sortable" ui-sortable ng-model="newSchema.appFormFields">
+                            <div ng-repeat="formField in newSchema.appFormFields" class="sortable">
+                                <div ng-init="setEndUserEmailNotifications(formField)"></div><!--End User Notifications moved to a new location, and this modifies old forms to have the new information and slowly deprecate the old location -->
+                                <div class="row newField-primary field-row" ng-click="formField.isCollapsed = !formField.isCollapsed;checkAllFieldsCollapsed();" ng-class={'border-bottom-none':!formField.isCollapsed}>
+                                    <div class="col-xs-1 col-spacing">
+                                       <div class="collapse-icons"><span class="fa fa-chevron-right" ng-show="formField.isCollapsed"></span><span class="fa fa-chevron-down" ng-show="!formField.isCollapsed"></span></div>
+                                    </div>
+
+                                    <div class="col-xs-4 col-spacing">
+                                        <a class="no-color-link">{{formField.fieldName}}</a>
+                                    </div>
+
+                                    <div class="col-xs-4 col-spacing">
+                                        <span>{{formField.readable}}</span>
+                                    </div>
+
+                                    <div class="col-xs-3 col-spacing text-right">
+                                        <button type="button" class="btn btn-primary btn-xs hidden-xs" ng-click="duplicateFormField($index, formField); formField.isCollapsed = !formField.isCollapsed;checkAllFieldsCollapsed();">
+                                            <span class="fa fa-files-o"></span> Duplicate
+                                        </button>
+                                        <button type="button" class="btn btn-danger btn-xs hidden-xs" ng-click="removeFormField($index, formField)">
+                                            <span class="fa fa-trash"></span> Remove
+                                        </button>
+
+                                    </div>
+                                </div>
+                                <div collapse="formField.isCollapsed">
+                                    <div class="row">
+                                        <ng-form name="form">
+                                        <div class="col-sm-3 col-sm-offset-1 url-break-word">
+                                            <strong>Field Name/Question<span class="sub_reqText">*</span> <span class="text-red" ng-show="(form.text.$error.required && !form.text.$pristine)||(form.text.$error.required && createFormErrors)"><br>The name of the field is required.</span></strong>
+                                        </div>
+
+                                        <div class="col-sm-8">
+                                            <div class="">
+                                                <div class="form-group has-feedback">
+                                                    <input type="text" name="text" class="form-control" ng-model="formField.fieldName" placeholder="Example: Name" ng-change="createUniqueId(formField, $index,false);" required sync-focus-with="formField.isFocused"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        </ng-form>
+                                    </div>
+
+                                    <!-- Set SequenceNumber for sorting -->
+                                    <input style="display:none;" type="text" class="form-control sequenceNumber" ng-model="formField.sequenceNumber">
+
+                                    <div class="row">
+                                        <div class="col-sm-3 col-sm-offset-1 url-break-word">
+                                            <strong>Unique Id <a href="#" tabindex="-1"></a></strong>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <div class="form-group has-feedback">
+                                                <input type="text" ng-readonly="true" class="form-control notAllowed" name="uniqueId" id="uniqueId" ng-model="formField.uniqueId"  disabled>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" >
+                                        <div class="col-sm-3  col-sm-offset-1 url-break-word">
+                                            <strong>Field Type<span class="sub_reqText">*</span> </strong>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <div class="form-group">
+                                                <select ng-options="type.name as type.readable group by type.groupName for type in fieldType.types" ng-model="formField.fieldType" ng-change="newMedia(formField);" name="fieldType" class="form-control">
+                                                    <option value="">------</option>
+                                                </select>
+                                                <p ng-if="formField.fieldType == 'radio' || formField.fieldType == 'checkbox' || formField.fieldType == 'dropdown' || formField.fieldType == 'tags'" class="options-list" ng-hide="formField.isConditional">
+                                                    <input type="text" class="form-control" ng-model="formField.fieldTypeOptions" placeholder="separate each option with comma">
+                                                </p>
+                                                <!-- Hiding conditional -->
+                                                <div class="checkbox" ng-show="formField.fieldType =='checkbox'">
+                                                    <label><input type="checkbox" ng-model="formField.hasOtherField">Add 'Other' field <a href="#" tooltip-placement="right" tooltip="{{tooltips.otherField}}" tabindex="-1"><i class="fa fa-info-circle"></i></a></label>
+                                                </div>
+                                                <div class="checkbox" ng-show="formField.fieldType == 'radio'||formField.fieldType == 'dropdown'">
+                                                    <label>
+                                                        <input type="checkbox" ng-model="formField.isConditional"><br>
+                                                        Conditional <a href="#" tooltip-placement="right" tooltip="{{tooltips.conditional}}" tabindex="-1"><i class="fa fa-info-circle"></i></a>
+                                                        <span class="text-red">(<strong>WARNING: </strong>This feature only works on the hosted form, not the embedded form.)</span>
+                                                    </label>
+
+                                                </div>
+                                                <div ng-show="(formField.fieldType == 'dropdown'|| formField.fieldType == 'radio') && formField.isConditional" >
+                                                    <p><button type="button" ng-click="addOption($index, formField.uniqueId)" class="btn btn-primary">+ Add Option</button></p>
+                                                    <div ng-repeat="option in formField.fieldTypeOptionsArray">
+                                                        <div class="row">
+                                                            <div class="col-xs-2"><strong>Option {{$index+1}}</strong></div>
+                                                            <div class="col-xs-8"><input type="text" class="form-control" ng-model="option.optionValue" sync-focus-with="option.isFocused"></div>
+                                                            <div class="col-xs-1"><button type="button" class="btn btn-danger btn-sm" ng-click="formField.fieldTypeOptionsArray.splice($index,1)"><span class="fa fa-trash"></span></button></div>
+
+                                                        </div>
+                                                        <!-- CONDITIONAL FIELDS-->
+                                                        <div class="row">
+                                                            <div class="col-xs-11 col-xs-offset-1">
+                                                                <br>Below, add the fields you want to display if the user selects this option.<br>
+                                                                <button type="button" ng-click="newConditionalField($index, formField.uniqueId)" class="btn btn-primary">+ Add Conditional Field</button>
+
+                                                        <div class="row colHeader" ng-show="option.conditionalFields.length>0">
+                                                            <div class="col-xs-offset-1 col-sm-5 col-xs-5" style="word-wrap: break-word;">
+                                                                <strong>Field Name/Question </strong>
+                                                            </div>
+
+                                                            <div class="col-sm-6 col-xs-6">
+                                                                <strong>Field Type</strong>
+                                                            </div>
+                                                        </div>
+
+                                                        <div ng-repeat="condField in option.conditionalFields">
+
+                                                            <div class="row newField-primary field-row" ng-click="condField.isCollapsed = !condField.isCollapsed"  ng-class={'border-bottom-none':!condField.isCollapsed}>   <div class="col-sm-1 col-xs-1 col-spacing">
+                                                                <div class="collapse-icons"><span class="fa fa-chevron-right" ng-show="condField.isCollapsed"></span><span class="fa fa-chevron-down" ng-show="!condField.isCollapsed"></span>
+                                                                </div>
+                                                                </div>
+                                                            <div class="col-sm-5 col-xs-5 col-spacing">
+                                                                <a>{{condField.fieldName}}</a>
+                                                            </div>
+                                                            <div class="col-sm-4 col-xs-4 col-spacing">
+                                                                <span ng-if="!condField.readable"></span>{{condField.readable}}
+                                                            </div>
+                                                            <div class="col-xs-2 col-spacing text-right">
+                                                                <button type="button" class="btn btn-danger btn-xs" ng-click="option.conditionalFields.splice($index, 1)">
+                                                                    <span class="fa fa-trash"></span>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <div collapse="condField.isCollapsed">
+                                                            <div class="row">
+                                                            <ng-form name="form">
+                                                                    <div class="col-sm-12">
+                                                                        <strong>Field Name/Question<span class="sub_reqText">*</span><span class="text-red"  ng-show="(form.text.$error.required && !form.text.$pristine)||(form.text.$error.required && createFormErrors)"><br>The name of the field is required.</span> </strong>
+                                                                    </div>
+
+                                                                    <div class="col-sm-12">
+                                                                        <div class="">
+                                                                            <div class="form-group has-feedback">
+                                                                                <input type="text" name="text" class="form-control" ng-model="condField.fieldName" placeholder="Example: Location" ng-change="createUniqueId(condField, $index,false, ms._id, true, option.optionId);" required sync-focus-with="condField.isFocused">
+                                                                                <span class="help-block" ng-show="">This field is required.</span>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+                                                                    </ng-form>
+                                                                </div>
+
+                                                                <div class="row">
+                                                                    <div class="col-sm-12">
+                                                                        <strong>Unique Id</strong>
+                                                                    </div>
+                                                                    <div class="col-sm-12">
+                                                                        <div class="form-group has-feedback" ng-model="condField.fieldLabel">
+                                                                            <input type="text" ng-readonly="true" class="form-control notAllowed" name="uniqueId" id="uniqueId" ng-model="condField.uniqueId"  disabled>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-12">
+                                                                        <strong>Field Type<span class="sub_reqText">*</span></strong>
+                                                                    </div>
+                                                                    <div class="col-sm-12">
+                                                                        <div class="form-group">
+                                                                            <select ng-options="type.name as type.readable for type in fieldType.types | exclude:'mediaSet' | exclude:'mediaSetDoc' | exclude:'mediaSetVid'  | exclude:'mediaSetAudio'" ng-model="condField.fieldType" ng-change="newMedia(condField);" name="fieldType" class="form-control">
+                                                                                <option value="">------</option>
+                                                                            </select>
+                                                                             <p ng-if="condField.fieldType == 'radio' || condField.fieldType == 'checkbox' || condField.fieldType == 'dropdown' || condField.fieldType == 'tags'" class="options-list">
+                                                                                <input type="text" class="form-control" ng-model="condField.fieldTypeOptions" placeholder="separate each option with comma">
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <!--////////////////////////IF TYPE = TEXTAREA//////////////////////////// -->
+                                                                <div ng-if="condField.fieldType == 'textarea'">
+                                                                    <div class="row">
+                                                                        <div class="col-sm-12">
+                                                                            <strong>Max Num of Characters <span class="optional-text">(Optional)</span></strong>
+                                                                        </div>
+                                                                        <div class="col-sm-8">
+                                                                            <div class="form-group">
+                                                                                <input type="number" class="form-control" placeholder="Example: 500" ng-model="condField.textareaCharLimit">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                                <!--////////////////////////END IF TYPE = TEXTAREA//////////////////////////// -->
+                                                                <div class="row">
+                                                                    <div class="col-sm-12">
+                                                                        <strong>Helper Text <span class="optional-text">(Optional)</span></strong>
+                                                                    </div>
+                                                                    <div class="col-sm-12">
+                                                                        <div class="form-group has-feedback">
+                                                                            <textarea class="form-control" ng-model="condField.description" rows="2" class="form-control" placeholder="Example: Enter the name of the place where this picture was taken"> </textarea>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row" ng-show="condField.fieldType == 'text' || condField.fieldType == 'email' || condField.fieldType == 'textarea'">
+
+                                                                    <div class="col-sm-12">
+                                                                        <strong>Placeholder Text <span class="optional-text">(Optional)</span></strong>
+                                                                    </div>
+                                                                    <div class="col-sm-12">
+                                                                        <div class="form-group has-feedback">
+                                                                            <input type="text" class="form-control" ng-model="condField.placeholder" placeholder="Example: Anytown, USA"/>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                                <div class="row" ng-if="condField.fieldType == 'dobCheck'">
+                                                                    <ng-form name="form">
+                                                                    <div class="col-sm-12">
+                                                                        <strong>Minimum age<span class="sub_reqText">*</span> <a href="#" tooltip-placement="right" tooltip="tooltips.minAge" tabindex="-1"><i class="fa fa-info-circle"></i></a> <span ng-show="(form.number.$error.required && !form.number.$pristine)||(form.text.$error.required && createFormErrors)||(form.number.$error.number && !form.number.$pristine)||(form.text.$error.number && createFormErrors)" class="text-red">You must specify a minimum age as a number.</span></strong>
+                                                                    </div>
+                                                                    <div class="col-sm-12">
+                                                                        <div class="form-group has-feedback">
+                                                                            <input type="number" name="number" class="form-control" ng-model="condField.minAge" min="{{minDOBCheckAge}}"  required/>
+                                                                        </div>
+                                                                    </div>
+                                                                     </ng-form>
+                                                                </div>
+                                                                <div class="row">
+
+                                                                    <div class="col-sm-12">
+                                                                        <strong>Required<span class="sub_reqText">*</span></strong>
+                                                                    </div>
+                                                                    <div class="col-sm-12">
+                                                                        <div class="radio">
+                                                                            <label>
+                                                                                <input type="radio" ng-model="condField.isMandatory" ng-value="true" ng-change="handleRequireAll(condField.isMandatory)"> Yes
+                                                                            </label>
+                                                                        </div>
+                                                                        <div class="radio">
+                                                                            <label>
+                                                                                <input type="radio" ng-model="condField.isMandatory" ng-value="false" ng-change="handleRequireAll(condField.isMandatory)"> No
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+
+
+                                                        </div>
+
+                                                    </div>
+                                                     </div>
+                                                        </div>
+                                                    <!-- CONDITONAL FIELDS-->
+                                                    <hr>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--////////////////////////IF TYPE = TEXTAREA//////////////////////////// -->
+                                    <div ng-if="formField.fieldType == 'textarea'">
+                                        <div class="row" >
+                                            <div class="col-sm-3  col-sm-offset-1 url-break-word">
+                                                <strong>Max Num of Characters <span class="optional-text">(Optional)</span></strong>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <div class="form-group">
+                                                    <input type="number" class="form-control" placeholder="Example: 500" ng-model="formField.textareaCharLimit">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <!--////////////////////////IF TYPE = NUMBER//////////////////////////// -->
+                                    <div ng-if="formField.fieldType == 'number'">
+                                        <div class="row" >
+                                            <div class="col-sm-3  col-sm-offset-1 url-break-word">
+                                                <strong>Min Number <span class="optional-text">(Optional)</span></strong>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <div class="form-group">
+                                                    <input type="number" class="form-control" placeholder="Example: 10" ng-model="formField.min">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3  col-sm-offset-1 url-break-word">
+                                                <strong>Max Number <span class="optional-text">(Optional)</span></strong>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <div class="form-group">
+                                                    <input type="number" class="form-control" placeholder="Example: 100" ng-model="formField.max">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!--////////////////////////IF TYPE = Payment//////////////////////////// -->
+                                    <div ng-if="formField.fieldType == 'payment'">
+
+                                    </div>
+
+                                    <!--////////////////////////IF TYPE = MEDIASET//////////////////////////// -->
+                                    <div ng-if="formField.fieldType == 'mediaSet'">
+                                        <div class="row">
+                                            <div class="col-sm-3  col-sm-offset-1 url-break-word">
+                                                <strong>Image Uploader Info</strong>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <div class="row">
+                                                    <ng-form name="form">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group has-feedback">
+                                                            <label class="control-label">Number of Images<span class="sub_reqText">*</span> <a href="#" tooltip-placement="right" tooltip="{{tooltips.numOfImgs}}" tabindex="-1"><i class="fa fa-info-circle"></i></a> <span class="text-red" ng-show="(form.NumOfMedia.$error.required && !form.NumOfMedia.$pristine)||(form.NumOfMedia.$error.required && createFormErrors)||(form.NumOfMedia.$error.number && !form.NumOfMedia.$pristine)||(form.NumOfMedia.$error.number && createFormErrors)">The number of images is required and must be greater than or equal to 1.</span></label>
+                                                            <div ng-repeat="ms in newSchema.mediaSets">
+                                                                <input ng-if="ms!=null && ms._id==formField.mediaSetId" type="number" class="form-control" ng-model="ms.numOfMedia" name="NumOfMedia" placeholder="Default: 1" min="1" required/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    </ng-form>
+                                                </div>
+                                                <div class="row colHeader">
+                                                    <div class="col-xs-offset-1 col-sm-5 col-xs-5" style="word-wrap: break-word;">
+                                                        <strong>Field Name/Question </strong>
+                                                    </div>
+
+                                                    <div class="col-sm-6 col-xs-6">
+                                                        <strong>Field Type</strong>
+                                                    </div>
+
+                                                </div>
+                                                <div ng-repeat="ms in newSchema.mediaSets">
+                                                    <div ng-if="ms!=null && ms._id==formField.mediaSetId">
+                                                        <div ng-repeat="imageFormField in ms.mediaSetFormFields">
+                                                            <div class="row newField-primary field-row" ng-click="imageFormField.isCollapsed = !imageFormField.isCollapsed"  ng-class={'border-bottom-none':!imageFormField.isCollapsed}>   <div class="col-xs-1 col-spacing">
+                                                                <div class="collapse-icons"><span class="fa fa-chevron-right" ng-show="imageFormField.isCollapsed"></span><span class="fa fa-chevron-down" ng-show="!imageFormField.isCollapsed"></span></div>
+                                                            </div>
+                                                            <div class="col-xs-5 col-spacing">
+                                                                <a>{{imageFormField.fieldName}}</a>
+                                                            </div>
+                                                            <div class="col-xs-3 col-spacing">
+                                                                <span ng-if="!imageFormField.readable"></span>{{imageFormField.readable}}
+                                                            </div>
+                                                            <div class="col-xs-3 col-spacing text-right">
+                                                                <button type="button" class="btn btn-primary btn-xs hidden-xs" ng-click="newMediaFieldDuplicate(formField.mediaSetId, $index, imageFormField); formField.isCollapsed = !formField.isCollapsed;checkAllFieldsCollapsed();">
+                                                                    <span class="fa fa-files-o"></span> Duplicate
+                                                                </button>
+                                                                <button type="button" class="btn btn-danger btn-xs" ng-click="newSchema.mediaSets[formField.mediaSetId].mediaSetFormFields.splice($index, 1)">
+                                                                    <span class="fa fa-trash"></span> Remove
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <div collapse="imageFormField.isCollapsed">
+                                                            <div class="row">
+                                                            <ng-form name="form">
+                                                                <div class="col-sm-12">
+                                                                    <strong>Field Name/Question<span class="sub_reqText">*</span> <span class="text-red" ng-show="(form.text.$error.required && !form.text.$pristine)||(form.text.$error.required && createFormErrors)">The name of the field is required.</span></strong>
+                                                                </div>
+
+                                                                <div class="col-sm-12">
+                                                                    <div class="">
+                                                                        <div class="form-group has-feedback">
+                                                                            <input type="text" name="text" class="form-control" ng-model="imageFormField.fieldName" placeholder="Example: Location" ng-change="createUniqueId(imageFormField, $index,true, ms._id, false, option.optionId);" required>
+
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                </ng-form>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-sm-12">
+                                                                    <strong>Unique Id</strong>
+                                                                </div>
+                                                                <div class="col-sm-12">
+                                                                    <div class="form-group has-feedback" ng-model="imageFormField.fieldLabel">
+                                                                        <input type="text" ng-readonly="true" class="form-control notAllowed" name="uniqueId" id="uniqueId" ng-model="imageFormField.uniqueId"  disabled>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-sm-12">
+                                                                    <strong>Field Type<span class="sub_reqText">*</span></strong>
+                                                                </div>
+                                                                <div class="col-sm-12">
+                                                                    <div class="form-group">
+                                                                        <select ng-options="type.name as type.readable for type in fieldType.types | exclude:'mediaSet' | exclude:'mediaSetDoc' | exclude:'mediaSetVid'  | exclude:'mediaSetAudio' | exclude:'firstAndLastName'  | exclude:'phoneNumber'| exclude:'address'" ng-model="imageFormField.fieldType" ng-change="getMediaSetId(imageFormField); newMedia(imageFormField);" name="fieldType" class="form-control">
+                                                                            <option value="">------</option>
+                                                                        </select>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <!--////////////////////////IF TYPE = TEXTAREA//////////////////////////// -->
+                                                                <div ng-if="imageFormField.fieldType == 'textarea'">
+                                                                    <div class="row">
+                                                                        <div class="col-sm-12">
+                                                                            <strong>Max Num of Characters <span class="optional-text">(Optional)</span></strong>
+                                                                        </div>
+                                                                        <div class="col-sm-8">
+                                                                            <div class="form-group">
+                                                                                <input type="number" class="form-control" placeholder="Example: 500" ng-model="imageFormField.textareaCharLimit">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                                <!--////////////////////////END IF TYPE = TEXTAREA//////////////////////////// -->
+                                                                <div class="row">
+                                                                    <div class="col-sm-12">
+                                                                        <strong>Helper Text <span class="optional-text">(Optional)</span></strong>
+                                                                    </div>
+                                                                    <div class="col-sm-12">
+                                                                        <div class="form-group has-feedback">
+                                                                            <textarea class="form-control" ng-model="imageFormField.description" rows="2" class="form-control" placeholder="Example: Enter the name of the place where this picture was taken"> </textarea>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row" ng-show="imageFormField.fieldType == 'text' || imageFormField.fieldType == 'email' || imageFormField.fieldType == 'textarea'">
+
+                                                                    <div class="col-sm-12">
+                                                                        <strong>Placeholder Text <span class="optional-text">(Optional)</span></strong>
+                                                                    </div>
+                                                                    <div class="col-sm-12">
+                                                                        <div class="form-group has-feedback">
+                                                                            <input type="text" class="form-control" ng-model="imageFormField.placeholder" placeholder="Example: Anytown, USA"/>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                                <div class="row" ng-if="imageFormField.fieldType == 'dobCheck'">
+                                                                    <ng-form name="form">
+                                                                    <div class="col-sm-12">
+                                                                        <strong>Minimum age <span class="sub_reqText">*</span><a href="#" tooltip-placement="right" tooltip="{{tooltips.minAge}}" tabindex="-1"><i class="fa fa-info-circle"></i></a> <span ng-show="(form.number.$error.required && !form.number.$pristine)||(form.text.$error.required && createFormErrors)||(form.number.$error.number && !form.number.$pristine)||(form.text.$error.number && createFormErrors)" class="text-red">You must specify a minimum age as a number.</span></strong>
+                                                                    </div>
+                                                                    <div class="col-sm-12">
+                                                                        <div class="form-group has-feedback">
+                                                                            <input type="number" name="number" class="form-control" ng-model="imageFormField.minAge" min="{{minDOBCheckAge}}" required />{{minDOBCheckAge}}
+                                                                        </div>
+                                                                    </div>
+                                                                </ng-form>
+                                                                </div>
+                                                                <div class="row">
+
+                                                                    <div class="col-sm-12">
+                                                                        <strong>Public / Private Field<span class="sub_reqText">*</span></strong>
+                                                                    </div>
+                                                                    <div class="col-sm-12">
+                                                                        <div class="radio">
+                                                                            <label>
+                                                                                <input type="radio" ng-model="imageFormField.isPublic" ng-value="true"> Public
+                                                                            </label>
+                                                                        </div>
+                                                                        <div class="radio">
+                                                                            <label>
+                                                                                <input type="radio" ng-model="imageFormField.isPublic" ng-value="false"> Private
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                                <div class="row">
+
+                                                                    <div class="col-sm-12">
+                                                                        <strong>Required<span class="sub_reqText">*</span></strong>
+                                                                    </div>
+                                                                    <div class="col-sm-12">
+                                                                        <div class="radio">
+                                                                            <label>
+                                                                                <input type="radio" ng-model="imageFormField.isMandatory" ng-value="true" ng-change="handleRequireAll(imageFormField.isMandatory)"> Yes
+                                                                            </label>
+                                                                        </div>
+                                                                        <div class="radio">
+                                                                            <label>
+                                                                                <input type="radio" ng-model="imageFormField.isMandatory" ng-value="false" ng-change="handleRequireAll(imageFormField.isMandatory)" > No
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+
+                                                                <div class="row">
+                                                                    <div class="col-sm-3">
+                                                                        <a ng-click="imageFormField.isCollapsed = !imageFormField.isCollapsed" class="btn btn-medium btn-info pull-left">Collapse</a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                                <br>
+                                                <div class="row">
+                                                    <div class="col-sm-3"><p><a role="button" class="btn btn-medium btn-primary"ng-click="newMediaField(formField.mediaSetId)">+ Add Fields to Each Image</a></p></div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--////////////////////////END IF TYPE = MEDIASET//////////////////////////// -->
+                                    <div class="row" ng-hide="formField.fieldType == 'wufooUpload'">
+                                        <div class="col-sm-3 col-sm-offset-1">
+                                            <strong>Helper Text <a href="#" tooltip-placement="right" tooltip="{{tooltips.fieldInstructions}}" tabindex="-1"><i class="fa fa-info-circle"></i></a> <span class="optional-text">(Optional)</span></strong>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <div class="form-group has-feedback">
+                                                <textarea class="form-control" ng-model="formField.description" rows="2" class="form-control" placeholder="Example: Please use your full, legal name"> </textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row"  ng-show="formField.fieldType == 'text' || formField.fieldType == 'email' || formField.fieldType == 'textarea'">
+
+                                        <div class="col-sm-3 col-sm-offset-1">
+                                            <strong>Placeholder Text <a href="#" tooltip-placement="right" tooltip="{{tooltips.placeholder}}" tabindex="-1"><i class="fa fa-info-circle"></i></a> <span class="optional-text">(Optional)</span></strong>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <div class="form-group has-feedback">
+                                                <input type="text" class="form-control" ng-model="formField.placeholder" placeholder="Example: Jane Doe"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" ng-if="formField.fieldType == 'dobCheck'">
+                                        <ng-form name="form">
+                                        <div class="col-sm-3 col-sm-offset-1">
+                                            <strong>Minimum age<span class="sub_reqText">*</span> <a href="#" tooltip-placement="right" tooltip="{{tooltips.minAge}}" tabindex="-1"><i class="fa fa-info-circle"></i></a> <span ng-show="(form.number.$error.required && !form.number.$pristine)||(form.text.$error.required && createFormErrors)||(form.number.$error.number && !form.number.$pristine)||(form.text.$error.number && createFormErrors)" class="text-red">You must specify a minimum age as a number.</span></strong>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <div class="form-group has-feedback">
+                                                <input type="number" name="number" class="form-control" ng-model="formField.minAge" min="{{minDOBCheckAge}}"  required />
+                                            </div>
+                                        </div>
+                                    </ng-form>
+                                    </div>
+                                    <div class="row" ng-hide="formField.fieldType == 'sectionHeader' || formField.fieldType == 'subSectionHeader'|| formField.fieldType=='wufooUpload' || formField.fieldType == 'mediaSet' || formField.fieldType == 'mediaSetDoc' || formField.fieldType == 'mediaSetVid' || formField.fieldType == 'mediaSetAudio'">
+
+                                        <div class="col-sm-3 col-sm-offset-1">
+                                            <strong>Public / Private Field<span class="sub_reqText">*</span> <a href="#" tooltip-placement="right" tooltip="{{tooltips.publicPrivate}}" tabindex="-1"><i class="fa fa-info-circle"></i></a></strong>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" ng-model="formField.isPublic" ng-value="true"> Public
+                                                </label>
+                                            </div>
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" ng-model="formField.isPublic" ng-value="false"> Private
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row" ng-hide="formField.fieldType == 'sectionHeader' || formField.fieldType == 'subSectionHeader'|| formField.fieldType == 'wufooUpload'">
+
+                                        <div class="col-sm-3 col-sm-offset-1">
+                                            <strong>Required<span class="sub_reqText">*</span></strong>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" ng-model="formField.isMandatory" ng-value="true"  ng-change="handleRequireAll(formField.isMandatory)"> Yes
+                                                </label>
+                                            </div>
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" ng-model="formField.isMandatory" ng-value="false"  ng-change="handleRequireAll(formField.isMandatory)"> No
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row" ng-show="formField.fieldType=='email'">
+                                        <div class="col-sm-11 col-sm-offset-1">
+                                            <strong>End User Email Notification has moved to the 'Email Notifications Settings' section. Please verify your changes are visible there.</strong>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <a ng-click="formField.isCollapsed = !formField.isCollapsed" class="btn btn-medium btn-info pull-left">Collapse</a><br><br>
+                                        </div>
+                                    </div>
+                                    <hr ng-hide="newSchema.appFormFields.length == 0">
+
+                                </div>
+                            </div>
+                        </div>
+                        <% include add-field-buttons.ejs %>
+                    </div>
+                </div>
+
+                </div>
+                <% include form-settings.ejs %>
+                <% include schedule-form-activity.ejs %>
+                <% include email-settings.ejs %>
+                <% include curation-settings.ejs %>
+                <% include adv-form-settings.ejs %>
+
+
+
+
+        </div>
+        <!-- CONFIRM PLATFORM-->
+        <div class="confirmPlatform col-sm-6" ng-hide="previewIsHidden">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">PREVIEW </h3>
+                    <p><button type="button" class="btn btn-info" ng-click="previewIsHidden = !previewIsHidden;">Hide Preview</button></p>
+                </div>
+                <div class="panel-body">
+                    <div class="callout callout-info">
+                        <p style="color: #3A87AD;"><i class="fa fa-info-circle"></i> This is a real-time preview for how your form will look, but it is not to scale.</p>
+                    </div>
+                    <div class="form-preview">
+                        <div class="read-only-text">PREVIEW</div>
+                        <div class="callout callout-warning" ng-show="newSchema.appFormFields.length==0">
+                            <h4><i class="fa fa-warning"></i> Click the "+ Add Field" button to add your first field! </h4>
+                        </div>
+                        <fieldset ng-disabled="isPreview">
+                        <div ng-repeat="item in uploader.queue">
+                            <img img-data="item.file" style="max-width: 100%;" onerror="this.style.display='none'">
+                        </div>
+                        <img ng-src="{{newSchema.logoURL}}" class="" ng-show="uploader.queue.length == 0 && newSchema.logoURL != '' ">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h1>{{newSchema.appName}}</h1>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h4 ng-bind-html="newSchema.appDescription"></h4>
+                            </div>
+                        </div>
+                        <div ng-repeat="field in newSchema.appFormFields">
+                            <div class="form-group" ng-show="field.isPublic">
+                                <label ng-hide="field.fieldType == 'sectionHeader'|| formField.fieldType == 'subSectionHeader'">
+                                    {{field.fieldName}} <span ng-show="field.isMandatory" class="sub_reqText">*</span>
+                                </label>
+                                <span ng-hide="field.fieldType == 'sectionHeader'|| formField.fieldType == 'subSectionHeader'">
+                                    <p class="help-block" ng-bind-html="field.descriptionSafe"></p>
+                                </span>
+                                <field-preview content="field"></field-preview>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-primary" disabled><span ng-show="newSchema.callToAction">{{newSchema.callToAction}}</span><span ng-show="!newSchema.callToAction">Submit</span></button></fieldset>
+                        <br><br>
+                    </div>
+                    <br>
+
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+</div>

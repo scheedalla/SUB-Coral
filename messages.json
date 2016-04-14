@@ -1,0 +1,23 @@
+{
+	"fromEmail":"donotreply@noemail.com",
+	"emailForgotPassword": "<br>You are receiving this e-mail message in response to a request to update a forgotten password for the email address ",
+	"emailConfirmEmail": "<br>You are receiving this e-mail message in response to the registration of an account on SUB. ",
+	"emailStatusUpdate": "<br>You are receiving this e-mail message to inform you of a change to the account for the email address ",
+	"emailSubmissionNotification": {
+		"reasonForEmail": "<br>You are receiving this e-mail message because your form has received a new submission.<br><br>",
+		"message": "Your form has received a submission. Click here to view submissions:<br><br>",
+		"Header": "<h2>This Response:</h2>"
+	},
+	"endUserNotification": {
+		"reasonForEmail": "<br>You are receiving this e-mail message to confirm that your submission was received.",
+		"subject": "Thank you for your submission!",
+		"message": "Thanks for your submission to the following form: "
+	},
+	"emailExpirationNotification": {
+		"reasonForEmail": "You are receiving this e-mail message because your Submission Platform account is inactive and about to be deleted. If you believe you have received this message in error, please contact the SUB team at it.sub@washpost.com",
+		"message2": "<br>If you no longer need your SUB account, you can ignore this email, and in 30 days your account data will be deleted to save space.<br><br> ",
+		"subject": "Action Required: Your Sub account is about to expire",
+		"message1": "Hi there!<br><br> We noticed that you haven't logged in to the Submission Platform in a while.  Free accounts must login at least once every 6 months to remain active.  If you would like to keep your account active, simply login and we won’t bug you again for another 6 months.  You can login to SUB here:<br><br>"
+	},
+	"emailContactInfo": "If you believe you have received this message in error, please contact the SUB team at <a href='mailto:it.sub@noname.com?Subject=SUB%20Question'>it.sub@noname.com</a><br><div class='HOEnZb'><div class='h5'><br>&nbsp;Submission Platform<br>&nbsp;123 Main Street<br>&nbsp;Anywhere, NY 11111<br></div></div></div><br></div>"
+}

@@ -1,0 +1,32 @@
+<!-- Admin View -->
+<!-- Modal for User Save Search -->
+
+<!-- Start Modal Template -->
+<script type="text/ng-template" id="useSaveSearch.html">
+	<div class="modal-header">
+	    <button type="button" class="close" data-ng-click="modalOptions.close()" aria-hidden="true">Close</button>
+  		<h3>{{modalOptions.headerText}}</h3>
+	</div>
+	<div class="modal-body">
+			<div class="alert alert-danger" ng-show="searchToApply.error" >{{searchToApply.error}} </div>
+			<div>
+				<form ng-submit="applySearch()">
+					<div class="row">
+						<div class="col-sm-2" style="margin-top:12px;">
+							<h3 class="panel-title">Saved Searches</h3>
+						</div>								
+						<div class="col-sm-8">
+							<select ng-options="search as search.name for search in app.savedSearches track by search.name" ng-model="searchToApply.search" class="form-control"><option value="">--Select a Value--</option></select>
+						</div>
+						<div class="col-sm-2">
+							<input type="button" value="Search" ng-click="applySearch(); modalOptions.ok();" aria-hidden="true" class="btn btn-primary" />
+						</div>
+					</div>
+				</form>
+			</div>
+	</div>
+	<div class="modal-footer">
+	  <button class="btn btn-primary" data-ng-click="modalOptions.ok();">{{modalOptions.closeButtonText}}</button>
+	</div>
+</script>
+<!-- End Modal Template -->
