@@ -172,7 +172,10 @@ exports.getAccountForms = function(Forms, User, Sub) {
           var aggOptions = {mustMatch: {"accountId": accountId, "submitted" : true}, groupBy: "appId"}
           Sub.aggregateCount(aggOptions, function(err, results){
             var subCounts = {};
-            var buckets = results.aggregation.ElmongooseAggWrapper.ElmongooseAgg.buckets;
+            var buckets = {};
+            if(results.aggregation){
+              buckets = results.aggregation.ElmongooseAggWrapper.ElmongooseAgg.buckets;
+            }
             for(var key in buckets){
               subCounts[buckets[key].key] = buckets[key].doc_count;
             }
@@ -207,7 +210,10 @@ exports.getAccountSubs = function(Sub) {
     Sub.aggregateCount(aggOptions, function(err, results){
       var subCounts = {};
       if(results != null){
-        var buckets = results.aggregation.ElmongooseAggWrapper.ElmongooseAgg.buckets;
+        var buckets = {};
+          if(results.aggregation){
+            buckets = results.aggregation.ElmongooseAggWrapper.ElmongooseAgg.buckets;
+          }
         for(var key in buckets){
           subCounts[buckets[key].key] = buckets[key].doc_count;
         }
@@ -456,7 +462,7 @@ exports.getSubmissionSearchInternal = function(Sub) {
       { "createdDate" : "desc" }
     ]
     Sub.search(searchOpts,function(error, results) {
-      if(!results.hits || !results.total){
+      if(!results || !results.hits || !results.total){
         if(format == 'json') res.json({ Submissions : null });
         else if(format == 'jsonp') res.jsonp({ Submissions : null });
       }
