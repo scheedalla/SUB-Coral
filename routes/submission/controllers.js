@@ -1,55 +1,60 @@
-//submission.js handles all requests to save or update documents  in the database
 
-//Global variable: stores json vs jsonp
-//some methode users need jsonp so we want to let them choose that in their api call to sub
-var format;
+/**
+ * submission.js handles all requests to save or update documents  in the database
+ */
 
-var Mongoose = require('mongoose');
+/**
+ * Module dependencies
+ */
 
+import Mongoose from 'mongoose';
+import db from 'database';
+
+/**
+ * Models
+ */
+
+const Sub = db.model('submissions');
+
+/**
+ * Controllers
+ */
 
 //Description: Saves a form submission to the submission collection
 //TriggeredBy: Post request to /submission
 //RequestBody: a submission document to be inserted into mongodb
-exports.submitForm = function(Sub, User, Forms, sendSESEmail, messages, applicationBase, sendSubmissionNotification, crypto, applyTokenToDraft, isMediasetSave) {
-  return function(req, res) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-    res.setHeader('Access-Control-Allow-Credentials', true);
-    var sub = new Sub(req.body);
-    console.log("entire sub:")
-    console.log(sub)
-    sub.save(function(error, sub) {
-      if (error || !sub) {
-        res.json({ error : error });
-      } else {
-        console.log("is sub submitted: " + sub.submitted)
-        if(sub.submitted && !isMediasetSave){
-          sub.editToken = null;
+export const submitForm = (isMediasetSave = false) => async (req, res) => {
+  const sub = new Sub(req.body);
+  sub.save(function(error, sub) {
+    if (error || !sub) {
+      res.json({ error : error });
+    } else {
+      console.log("is sub submitted: " + sub.submitted)
+      if(sub.submitted && !isMediasetSave){
+        sub.editToken = null;
+          sendSubmissionNotification(sub, Forms, User, sendSESEmail, messages, applicationBase);
+          console.log("Action='new submission' SubId="+sub._id+" AppId="+sub.appId+" Status=success");
+          res.json({ submissionInfo : sub });
+      console.log("is sub draft: " + sub.isDraft + " isMSSave:"+isMediasetSave)
+      } else if(sub.isDraft && !isMediasetSave){
+        if(!sub.editToken){
+          applyTokenToDraft(crypto,sub)
+          .then(function(savedDoc){
             sendSubmissionNotification(sub, Forms, User, sendSESEmail, messages, applicationBase);
             console.log("Action='new submission' SubId="+sub._id+" AppId="+sub.appId+" Status=success");
-            res.json({ submissionInfo : sub });
-        console.log("is sub draft: " + sub.isDraft + " isMSSave:"+isMediasetSave)
-        } else if(sub.isDraft && !isMediasetSave){
-          if(!sub.editToken){
-            applyTokenToDraft(crypto,sub)
-            .then(function(savedDoc){
-              sendSubmissionNotification(sub, Forms, User, sendSESEmail, messages, applicationBase);
-              console.log("Action='new submission' SubId="+sub._id+" AppId="+sub.appId+" Status=success");
-                res.json({ submissionInfo : sub });
-            })
+              res.json({ submissionInfo : sub });
+          })
 
-          } else{
-            sendSubmissionNotification(sub, Forms, User, sendSESEmail, messages, applicationBase);
-            res.json({ submissionInfo : sub });
-          }
-        }
-        else{
+        } else{
+          sendSubmissionNotification(sub, Forms, User, sendSESEmail, messages, applicationBase);
           res.json({ submissionInfo : sub });
         }
       }
-    });
-  };
+      else{
+        res.json({ submissionInfo : sub });
+      }
+    }
+  });
 };
 
 //Description: Update an existed submission in the database
