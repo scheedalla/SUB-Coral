@@ -18,7 +18,7 @@ To run this project, make sure you have Node.js installed: https://nodejs.org/en
 <pre>
 	$ npm install <br>
 	$ bower install<br>
-	$ node app.js
+	$ node server.js
 </pre>
 
 ## There are no users so you must register before signing in.
