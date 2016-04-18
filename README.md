@@ -1,8 +1,7 @@
 Submission Platform
 ===================
 --------------------
-Authors - Matthew Cwalinski, Kat Styons, Sruti Cheedalla <br>
-Created Date - January 30, 2014 <br>
+Authors - The Washington Post
 
 ## Synopsis
 
