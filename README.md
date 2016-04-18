@@ -15,6 +15,7 @@ To run this project, make sure you have Node.js installed: https://nodejs.org/en
 2. Set up a local Elastic search instance.<br> Follow the instructions here: https://www.elastic.co/guide/en/elasticsearch/guide/current/running-elasticsearch.html
 3. Throughout the app, there are references to photo uploaders. This functionality will not work as it points to an external service.<br>
 
+
 <pre>
 	$ npm install <br>
 	$ bower install<br>
