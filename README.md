@@ -14,7 +14,7 @@ To run this project, make sure you have Node.js installed: https://nodejs.org/en
 1. Set up a local Mongo database. You can dump the data from here: https://s3.amazonaws.com/wpentdev/coral/mongodump.zip<br>
 2. Set up a local Elastic search instance.<br> Follow the instructions here: https://www.elastic.co/guide/en/elasticsearch/guide/current/running-elasticsearch.html
 
-3. Throughout the app, there are references to photo uploaders. This functionality will not work as it points to an external service.<br>
+<br>3. Throughout the app, there are references to photo uploaders. This functionality will not work as it points to an external service.<br>
 
 
 <pre>
