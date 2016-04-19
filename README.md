@@ -55,6 +55,8 @@ The app also uses a hosted media service for uploaders. Currently we aren't prov
 
 ## Help
 
+<b>MongoDB</b>
+
 This is a guide to MongoDB shell commands.
 
 <b>Create a database</b>: Once you have installed your MongoDB server and entered into the shell, you can create a new database with the following: <br>
@@ -66,3 +68,34 @@ Example:  <pre> db.myCollection.insert ({value: "my first document"}) </pre>
 
 Create a user: You can create a user for any database when in the mongo shell. There are many different rolse and settings that can be created, but here is the basic way to create a user for a specific database. <br>
 Example: <pre> use sub db.createUser( { user: "sub_test", pwd: "mysecretpassword", roles: [ "readWrite", "sub" ] } ) </pre>
+
+<b>ElasticSearch</b>
+
+<p>This is a guide to ElasticSearch queries.</p>
+
+You can access elasticsearch at the endpoint in the config file and add :9200 at the end of the url in your browser. <br>
+
+<h4> Marvel Sense </h4>
+There is a plugin called Marvel Sense installed that allows you to run queries in your browser against your cluster.
+
+The plugin can be viewed here:  http://coralsearch.wpentdev.com:9200/_plugin/marvel/sense/
+
+Queries to run are:
+
+GET /_cluster/health
+(gets cluster health)
+<br>
+GET /_cluster/stats
+(gets cluster stats)
+<br>
+GET /_nodes/stats
+(gets node stats)
+<br>
+GET /_cat/indices?v
+(gets index stats)
+<br>
+
+<h4> Big Desk</h4>
+There is a plugin called Big Desk installed that allows you to visualize your cluster.
+
+The plugin can be seen here:  http://coralsearch.wpentdev.com:9200/_plugin/bigdesk/#cluster
