@@ -55,36 +55,16 @@ var sendSESEmail = subUtils.sendSESEmail;
 //custom configuration for the client
 var customConfig = require('./config/custom-config')
 
-// var BitlyAPI = require("node-bitlyapi");
-// var bitlyOauthConfig = require('./config/bitly_oauth');
-// var Bitly = new BitlyAPI(bitlyOauthConfig.clientConfig);
-// Bitly.setAccessToken(bitlyOauthConfig.accessToken);
-
-
 var app = express();
 
 // Default Helmet settins minus Content Security and noCache
 app.use(helmet());
 
 app.use(helmet.contentSecurityPolicy({
-  // defaultSrc: ["'self'", 'default.com'],
-  // scriptSrc: ['scripts.com'],
-  // styleSrc: ['style.com'],
-  // imgSrc: ['img.com'],
-  // connectSrc: ['connect.com'],
-  // fontSrc: ['font.com'],
-  // objectSrc: ['object.com'],
-  // mediaSrc: ['media.com'],
-  // frameSrc: ['frame.com'],
-  // sandbox: ['allow-forms', 'allow-scripts'],
-  // reportUri: '/report-violation',
   reportOnly: false, // set to true if you only want to report errors
   setAllHeaders: false, // set to true if you want to set all headers
   safari5: false // set to true if you want to force buggy CSP in Safari 5
 }));
-
-// var clientjs = piler.createJSManager();
-// var clientcss = piler.createCSSManager();
 
 var winston = require('winston');
 //Logging
@@ -182,19 +162,8 @@ switch(process.env.NODE_ENV) {
     elasticSearch.prefix = "qa";
 }
 
-// var AppSchema = require('./models/AppSchema.js').AppSchema;
-// AppSchema.plugin(elmongoose, { host : elasticSearch.host,
-//                           prefix: elasticSearch.prefix});
-// var App = db.model('applications', AppSchema);
 
-// App.sync(function (err, numSynced) {
-//     if(err){
-//       console.log('error while syncing: ', err);
-//     }
-//     console.log('number of apps synced:', numSynced);
-// });
-
-
+// Including the Form schema
 var FormSchema = require('./models/FormSchema.js').FormSchema;
 FormSchema.plugin(elmongoose, { host : elasticSearch.host,
                           port : elasticSearch.port,
@@ -208,6 +177,8 @@ Forms.sync(function (err, numSynced) {
     console.log('number of apps synced:', numSynced);
 });
 
+
+// Including the Submission schema
 var SubmissionSchema = require('./models/Submit.js').SubmissionSchema;
 SubmissionSchema.plugin(elmongoose, { host : elasticSearch.host,
                                   port : elasticSearch.port,
@@ -231,10 +202,14 @@ SubmissionSchema.static('findByIdAndUpdate', function (id, options, callback) {
   return this.collection.findAndModify(id, options, callback);
 });
 
+
+// Including the end user schema
 var EndUserSchema = require('./models/EndUser.js').EndUserSchema;
 
 var EndUser = db.model('users', EndUserSchema);
 
+
+// Including user schema
 var UserSchema = require('./models/User.js').UserSchema;
 UserSchema.plugin(elmongoose, { host : elasticSearch.host,
                           port : elasticSearch.port,
@@ -248,6 +223,7 @@ User.sync(function (err, numSynced) {
     console.log('number of users synced:', numSynced);
 });
 
+// Inlcuding the account schema
 var AccountSchema = require('./models/Account.js').AccountSchema;
 AccountSchema.plugin(elmongoose, { host : elasticSearch.host,
                           port : elasticSearch.port,
@@ -256,11 +232,13 @@ var Account = db.model('accounts', AccountSchema);
 
 Account.sync(function (err, numSynced) {
     if(err){
-      // console.log('error while syncing: ', err);
+      console.log('error while syncing: ', err);
     }
-    // console.log('number of accounts synced:', numSynced);
+    console.log('number of accounts synced:', numSynced);
 });
 
+
+// Including the settings schema
 var SettingSchema = require('./models/Settings.js').SettingSchema;
 var Settings = db.model('settings', SettingSchema);
 
@@ -307,7 +285,6 @@ passport.use(new LocalStrategy({
         console.log("Action=login login-type=local UserName=" + username + " Status=failure Message='This account is inactive'");
         return done(null, false, { message: 'This account is inactive' });
       }
-
       user.lastActivity = new Date();
       // console.log("userNotified flag: " + user.userNotifiedOfInnactivity);
       if(user.userNotifiedOfInnactivity){
@@ -362,99 +339,6 @@ passport.use(new BasicStrategy({
   }
 ));
 
-var OPTS = require('./config/ldap');
-
-function findByEmployeeID(u, fn) {
-  User.findOne({
-    employeeID: u
-  }).done(function (err, user) {
-    // Error handling
-    if (err) {
-      return fn(null, null);
-      // The User was found successfully!
-    } else {
-      return fn(null, user);
-    }
-  });
-}
-
-function ldapUserMapping(user){
-  var subUser = {};
-  if(user) {
-    subUser ={
-      employeeID:user.employeeID,
-      customerName: user.givenName + " " + user.sn,
-      userName: user.sAMAccountName,
-      emailAddress: user.mail,
-      creationDate: new Date(),
-      isLDAP: true,
-      account:{
-        acctId:"53c935be7304a04920d58910",
-        role:"user",
-        status:"active"
-      }
-    }
-
-    return subUser;
-  }
-}
-//THANK YOU STACK OVERFLOW: http://stackoverflow.com/questions/23396112/passport-js-fails-on-req-login
-passport.use(new LdapStrategy(OPTS, function (user, done) {
-    // Will always have an authenticated user if we get here since passport will indicate the failure upstream.
-
-    // console.log("LDAP User", user.employeeID); //This returns the proper users EmployeeID.
-
-    //Map the LDAP user to our local mapping
-    var mapUser = ldapUserMapping(user);
-
-    //Check to see if the user exists in the local database
-    User.findOne({employeeID:user.employeeID},function(err,localUser){
-      if (err) done(err, null, err);
-      if (!localUser) {
-        //This must be a new user who authenticated via LDAP, create a local user account.
-        console.log("Action=register login-type=twpn UserName=" + user.sAMAccountName + " Status=success");
-        User.create(mapUser, function(err, localUser){
-          if (err) done(err, null, err);
-          console.log("Action=register login-type=twpn UserName=" + user.sAMAccountName + " Status=success");
-          return done(null, localUser);
-        });
-
-              var to = [user.mail];
-              //send SES email
-              var sesMessage = {
-                     Subject: {
-                        Data: 'Welcome to SUB!'
-                     },
-                     Body: {
-                         Html: {
-                         Data: messages.emailNewRegistration
-                        + messages.emailConfirmEmail + "<a href='mailto:"+user.mail+"' target='_blank'>"+user.mail+"</a>. <br><br>"
-                        + messages.emailContactInfo
-                         }
-                      }
-                 }
-              sendSESEmail(messages.fromEmail,to,sesMessage);
-      }
-      else {
-        //This is a user who has accessed our system before
-        //update lastActivity
-        localUser.lastActivity = new Date();
-        if(localUser.userNotifiedOfInnactivity){
-          delete localUser.userNotifiedOfInnactivity
-        }
-        localUser.save();
-
-        //Maybe update the user settings if upstream LDAP has updated anything.
-
-        //Return User
-        console.log("Action=login login-type=twpn UserName=" + user.sAMAccountName + " Status=success");
-        return done(null, localUser);
-      }
-    });
-  }
-));
-
-
 
 //config: authentication with passport
 app.use(cookieParser());
@@ -464,7 +348,6 @@ app.use(session({ secret: 'keyboard cat' , cookie:{maxAge:8 * 3600 * 1000}, resa
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(methodOverride());
-
 app.engine('html', require('ejs').__express);
 
 // development only
@@ -476,7 +359,6 @@ if ('development' == app.get('env')) {
 ses = function(){};
 
 // APPLICATION
-
 app.post('/register', application.register(User, Account, passwordHash, crypto, async, sendSESEmail, messages, applicationBase, custMessages))
 app.get('/changePass', application.getChangePass(User));
 app.post('/login', application.passportAuth(passport,Account,Settings));
@@ -547,7 +429,6 @@ app.post('/updateAccount', submission.updateAccount(Account));
 app.delete('/categories/:catId', submission.removeCategoryFromApps(Forms));
 app.post('/updateUser', submission.updateUser(User));
 app.post('/updateEndUser', submission.updateEndUser(EndUser));
-// app.post('/defaultCategory.json', submission.defaultCategory(Account));
 
 //Client Side Logging
 app.post('/clientDebuglogger', submission.clientDebuglogger());
@@ -564,56 +445,6 @@ var job = schedule.scheduleJob(rule, function(){
   subUtils.checkAppStatus(Forms); //if application's run date has ended, change status to inactive
 })
 
-// var job2 = schedule.scheduleJob('* * * * *', function(){
-
-//   if(db.readyState==0){
-//     console.log("Action=DBConnect Message=Attempting to reconnect to MongoDB");
-//     switch(env) {
-//       case "Local":
-//       db = Mongoose.createConnection('localhost', 'pup');
-//       console.log("Action=DBConnect Message=Reconnected to Local MongoDB")
-//       break;
-//       case "QA":
-//       db = Mongoose.createConnection('mongodb://pup_user:G3zm39JQDmUXN6MnGCPuTNTniszkar@10.128.134.151:27017/pup_qa?poolSize=10');
-//       console.log("Action=DBConnect Message=Reconnected to QA MongoDB")
-//       break;
-//       case "STAGE":
-//       db = Mongoose.createConnection('mongodb://pup_stg_user:5GnFDfBkIxBohkvsijwIMV48yIVDfY@10.128.134.151:27017/pup_stg?poolSize=10');
-//       console.log("Action=DBConnect Message=Reconnected to Stage MongoDB")
-//       break;
-//       case "PROD":
-//       db = Mongoose.createConnection('mongodb://pup_user:G3zm39JQDmUXN6MnGCPuTNTniszkar@10.128.134.151:27017/pup?poolSize=10');
-//       console.log("Action=DBConnect Message=Reconnected to PROD MongoDB")
-//       break;
-//       default:
-//       db.open('mongodb://pup_user:G3zm39JQDmUXN6MnGCPuTNTniszkar@10.128.134.151:27017/pup_qa?poolSize=10');
-//       console.log("Action=DBConnect Message=Reconnected to QA MongoDB")
-//     }
-
-//     db.on('error', function (err) {
-//       console.log("Error Message=Something went wrong with DB connection: " + err);
-//       if (err) // couldn't connect
-
-//       // hack the driver to allow re-opening after initial network error
-//       db.readyState=0;
-//       //db.db.close();
-
-//       dbConnectionError = true;
-
-//     });
-
-//     if (db.readyState2 != 0){
-//       dbConnectionError = false;
-//       App = db.model('applications', AppSchema);
-//       Sub = db.model('submissions', SubmissionSchema);
-//       Media = db.model('media', MediaSchema);
-//       User = db.model('customers', UserSchema);
-//       Account = db.model('accounts', AccountSchema);
-//       Settings = db.model('settings', SettingSchema);
-//       console.log("Action=DBConnect Message=Reconnected to mongodb");
-//     }
-//   }
-// })
 
 app.delete('/sub/:id', submission.deleteSub(Sub)); //delete a single submission
 app.delete('/form/:id', submission.deleteForm(Forms)); //delete a single form
@@ -623,20 +454,6 @@ app.post('/updatePupSub', submission.updatePupSubmission(Sub));
 app.post('/:id/changePass', submission.changePass(User, passwordHash));
 app.post('/form', submission.addNewKVP(Forms, applicationBase, request));
 
-
-//Cron job tests. Uncomment these routes to trigger cron jobs from your browser
-// app.get('/testexpiredaccounts', function(req,res){
-//   subUtils.expireInnactiveAccounts(Account, User, sendSESEmail, messages, applicationBase)
-//   res.json({"message" : "test"});
-// })
-// app.get('/testexpiredsubs', function(req,res){
-//   subUtils.deleteExpired(Sub)
-//   res.json({"message" : "test"});
-// })
-// app.get('/testappstatus', function(req,res){
-//   subUtils.checkAppStatus(Forms)
-//   res.json({"message" : "test"});
-// })
 
 // QUERY
 app.post('/check/username', query.checkUsername(User));
@@ -700,16 +517,6 @@ app.get('/:subId/sub.:format', query.getUniqueSubmission(Sub));
 // USER
 // app.get('/users', user.list);
 
-// TWP SSO Module Routes //
-app.post('/login-wp', application.passportAuthWP(passport, { failureRedirect: '/', failureFlash: true }), function (req, res) {
-  res.redirect('/admin');
-  req.session.user = req.session.passport.user;
-  console.log("successfully logged in:"+req.session.user);
-});
-app.get('/login-wp', application.passportAuthWP('saml', { failureRedirect: '/', failureFlash: true }), function (req, res) {
-  res.redirect('/');
-});
-
 // OTHER
 app.get('/logout', function (req, res){
   req.session.destroy(function (err) {
@@ -732,10 +539,6 @@ app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Credentials', true);
     next();
 });
-
-
-// app.use(logger('[:mydate] method=:method url=:url status=:status remote-addr:remote-addr res=:res[content-length]  response-time=:response-time ms'));app.use(express.json());
-
 
 // 404
 app.use(function(req, res, next){

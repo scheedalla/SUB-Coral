@@ -5,7 +5,7 @@
     <div class="body bg-gray">
         <div ng-init="initErrorMessages('<%= errorMessage %>','<%= successMessage %>','<%= redirect %>')"></div>
         <div ng-hide="goRegister">
-        <div class="login-type">
+        <!-- <div class="login-type">
           <div class="">
             <label>
               <input type="radio" name="loginType" value="sub" ng-model="loginType">
@@ -18,10 +18,11 @@
                     LDAP
                 </label>
             </div>
-        </div><br>
+        </div> -->
+    
 
-            <div class="alert alert-danger" ng-show="errorMessage != 'null'"><i class="fa fa-ban"></i>{{errorMessage}} </div>
-            <div class="alert alert-success" ng-show="successMessage != 'null'" ><i class="fa fa-check"></i>{{successMessage}} </div>
+        <div class="alert alert-danger" ng-show="errorMessage != 'null'"><i class="fa fa-ban"></i>{{errorMessage}} </div>
+        <div class="alert alert-success" ng-show="successMessage != 'null'" ><i class="fa fa-check"></i>{{successMessage}} </div>
 
         <!-- NORMAL LOGIN FORM -->
         <div ng-show="loginType == 'sub'">
@@ -100,6 +101,6 @@
                     <p ng-hide="goRegister||loginType == 'twpn'"><a class="btn-link" href="/forgot">Forgot Password?</a></p>
 
                     <p ng-hide="loginType == 'twpn'"><a class="btn-link" ng-model="loginRegister" ng-click="onLoginRegister()">{{loginRegister}}</a></p>
-                    <p class="text-center"><span class="fa fa-copyright"></span> 2014-2015 <strong>SUB</strong> </p>
+                    <p class="text-center"><span class="fa fa-copyright"></span> 2014-2016 <strong>SUB</strong> </p>
                 </div>
 </div>
