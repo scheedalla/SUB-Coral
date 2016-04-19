@@ -12,7 +12,7 @@ MongoDB - v 3.2 ExpressJS - v 4.12.4 AngularJS - v 1.4.7 NodeJS - v 10.25
 
 ## Installation
 
-1. Install node: https://nodejs.org/download/ (You can also install NodeJS using homebrew or any package manager.)
+Install node: https://nodejs.org/download/ (You can also install NodeJS using homebrew or any package manager.)
 
 Hosted Services
 
@@ -28,26 +28,26 @@ The app also uses a hosted media service for uploaders. Currently we aren't prov
 
 Local Services
 
-2. Install mongodb: https://docs.mongodb.org/manual/installation/
-	2.1  Start the Mongo service
-	2.2  Create a database names sub
-	2.3  Add user sub_test to the sub database.  Make sure the user has readWrite role on the DB and the PW matches the one in the connection string in config/db_local.js
-	2.4  Optionally you can import this data dump to your database: https://s3.amazonaws.com/wpentdev/coral/mongodump.zip
-	2.5  Check config/db_local.js to make sure you have commented out the hosted connection string and use the local connection string. <br>
+1. Install mongodb: https://docs.mongodb.org/manual/installation/
+	1.1  Start the Mongo service<br>
+	1.2  Create a database names sub<br>
+	1.3  Add user sub_test to the sub database.  Make sure the user has readWrite role on the DB and the PW matches the one in the connection string in config/db_local.js<br>
+	1.4  Optionally you can import this data dump to your database: https://s3.amazonaws.com/wpentdev/coral/mongodump.zip<br>
+	1.5  Check config/db_local.js to make sure you have commented out the hosted connection string and use the local connection string. <br>
 
-3. Set up a local Elastic search instance.<br> Follow the instructions here: https://www.elastic.co/guide/en/elasticsearch/guide/current/running-elasticsearch.html  <br>
-	3.1  Check config/elastic.js to make sure you have commented out the hosted connection string and use the local connection string. <br>
+2. Set up a local Elastic search instance.<br> Follow the instructions here: https://www.elastic.co/guide/en/elasticsearch/guide/current/running-elasticsearch.html  <br>
+	2.1  Check config/elastic.js to make sure you have commented out the hosted connection string and use the local connection string. <br>
 
-4.  Navigate to your project folder via command line and run the following commands in order. 
+3.  Navigate to your project folder via command line and run the following commands in order. 
 <pre>
 	$ npm install <br>
 	$ bower install<br>
 	$ grunt
 </pre>
 
-5. Now all of your dependencies, assets and services are installed and configured.  Run command <pre> $ node server.js </pre>  You will see a series of messages, starting with this "Action=DBConnect Message='Connected to QA MongoDB'"  That means you have successfully started your app and connected to your DB.
+4. Now all of your dependencies, assets and services are installed and configured.  Run command <pre> $ node server.js </pre>  You will see a series of messages, starting with this "Action=DBConnect Message='Connected to QA MongoDB'"  That means you have successfully started your app and connected to your DB.
 
-6. In your browser visit localhost:3000 the app will load up there.
+5. In your browser visit localhost:3000 the app will load up there.
 
 ## Help
 
