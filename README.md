@@ -75,7 +75,7 @@ Example: <pre> use sub db.createUser( { user: "sub_test", pwd: "mysecretpassword
 
 You can access elasticsearch at the endpoint in the config file and add :9200 at the end of the url in your browser. <br>
 
-<b> Marvel Sense </b>
+<b> Marvel Sense </b> <br>
 There is a plugin called Marvel Sense installed that allows you to run queries in your browser against your cluster.
 
 The plugin can be viewed here:  http://coralsearch.wpentdev.com:9200/_plugin/marvel/sense/
@@ -95,7 +95,7 @@ GET /_cat/indices?v
 (gets index stats)
 <br>
 
-<b> Big Desk </b>
+<b> Big Desk </b> <br>
 There is a plugin called Big Desk installed that allows you to visualize your cluster.
 
 The plugin can be seen here:  http://coralsearch.wpentdev.com:9200/_plugin/bigdesk/#cluster
