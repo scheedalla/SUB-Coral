@@ -14,7 +14,7 @@ MongoDB - v 3.2 ExpressJS - v 4.12.4 AngularJS - v 1.4.7 NodeJS - v 10.25
 
 Install node: https://nodejs.org/download/ (You can also install NodeJS using homebrew or any package manager.)
 
-Hosted Services
+<b>Hosted Services</b>
 
 There are several config files located in the config directory.  They contain connection strings to hosted instances of ElasticSearch and MongoDB.<br>
 These can be used for testing, but the data is publicly available, so do not create users with sensitive passwords, etc. <br>
@@ -26,16 +26,16 @@ Check both config files to make sure you have commented out the local connection
 
 The app also uses a hosted media service for uploaders. Currently we aren't providing a hosted or local variation of this, but will be asap.<br>
 
-Local Services
+<b>Local Services</b>
 
-1. Install mongodb: https://docs.mongodb.org/manual/installation/
+1. Install mongodb: https://docs.mongodb.org/manual/installation/ <br>
 	1.1  Start the Mongo service<br>
 	1.2  Create a database names sub<br>
 	1.3  Add user sub_test to the sub database.  Make sure the user has readWrite role on the DB and the PW matches the one in the connection string in config/db_local.js<br>
 	1.4  Optionally you can import this data dump to your database: https://s3.amazonaws.com/wpentdev/coral/mongodump.zip<br>
 	1.5  Check config/db_local.js to make sure you have commented out the hosted connection string and use the local connection string. <br>
 
-2. Set up a local Elastic search instance.<br> Follow the instructions here: https://www.elastic.co/guide/en/elasticsearch/guide/current/running-elasticsearch.html  <br>
+2. Set up a local Elastic search instance.<br> Follow the instructions here: <br> https://www.elastic.co/guide/en/elasticsearch/guide/current/running-elasticsearch.html  <br>
 	2.1  Check config/elastic.js to make sure you have commented out the hosted connection string and use the local connection string. <br>
 
 3.  Navigate to your project folder via command line and run the following commands in order. 
