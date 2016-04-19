@@ -55,7 +55,7 @@ The app also uses a hosted media service for uploaders. Currently we aren't prov
 
 ## Help
 
-<b>MongoDB</b>
+<h4>MongoDB</h4>
 
 This is a guide to MongoDB shell commands.
 
@@ -69,13 +69,13 @@ Example:  <pre> db.myCollection.insert ({value: "my first document"}) </pre>
 Create a user: You can create a user for any database when in the mongo shell. There are many different rolse and settings that can be created, but here is the basic way to create a user for a specific database. <br>
 Example: <pre> use sub db.createUser( { user: "sub_test", pwd: "mysecretpassword", roles: [ "readWrite", "sub" ] } ) </pre>
 
-<b>ElasticSearch</b>
+<h4>ElasticSearch</h4>
 
 <p>This is a guide to ElasticSearch queries.</p>
 
 You can access elasticsearch at the endpoint in the config file and add :9200 at the end of the url in your browser. <br>
 
-<h4> Marvel Sense </h4>
+<b> Marvel Sense <b>
 There is a plugin called Marvel Sense installed that allows you to run queries in your browser against your cluster.
 
 The plugin can be viewed here:  http://coralsearch.wpentdev.com:9200/_plugin/marvel/sense/
@@ -95,7 +95,7 @@ GET /_cat/indices?v
 (gets index stats)
 <br>
 
-<h4> Big Desk</h4>
+<b> Big Desk</b>
 There is a plugin called Big Desk installed that allows you to visualize your cluster.
 
 The plugin can be seen here:  http://coralsearch.wpentdev.com:9200/_plugin/bigdesk/#cluster
