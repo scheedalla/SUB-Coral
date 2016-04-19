@@ -54,14 +54,14 @@ The app also uses a hosted media service for uploaders. Currently we aren't prov
 
 ## Help
 
-This is a guide to MongoDB shell commands. Shell Commands
+This is a guide to MongoDB shell commands.
 
-Create a database: Once you have installed your MongoDB server and entered into the shell, you can create a new database with the following: 
-Example: use sub 
+<b>Create a database</b>: Once you have installed your MongoDB server and entered into the shell, you can create a new database with the following: <br>
+Example: <pre> use sub </pre>
 This will create the database and save it as long as you add a document to it.
 
-Create a collection: When in a database, to create a collection, you need to add a document by pointing to the desired name of the new collection and the collection will be created. 
-Example: db.myCollection.insert ({value: "my first document"})
+Create a collection: When in a database, to create a collection, you need to add a document by pointing to the desired name of the new collection and the collection will be created. <br>
+Example:  <pre> db.myCollection.insert ({value: "my first document"}) </pre>
 
-Create a user: You can create a user for any database when in the mongo shell. There are many different rolse and settings that can be created, but here is the basic way to create a user for a specific database. 
-Example: use myDatabase db.createUser( { user: "sub_test", pwd: "mysecretpassword", roles: [ "readWrite", "sub" ] } )
+Create a user: You can create a user for any database when in the mongo shell. There are many different rolse and settings that can be created, but here is the basic way to create a user for a specific database. <br>
+Example: <pre> use sub db.createUser( { user: "sub_test", pwd: "mysecretpassword", roles: [ "readWrite", "sub" ] } ) </pre>
