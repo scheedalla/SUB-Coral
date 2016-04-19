@@ -8,7 +8,10 @@ Authors - The Washington Post
 The Submission Platform is a dynamic form builder that lets you collect and manage user submissions of text, images, and other data. It is built entirely on the MEAN (MongoDB, Express, Angular, Node.js) stack.
 
 ##Component Versions
-MongoDB - v 3.2 ExpressJS - v 4.12.4 AngularJS - v 1.4.7 NodeJS - v 10.25
+MongoDB - v 3.2 <br>
+ExpressJS - v 4.12.4 <br>
+AngularJS - v 1.4.7 <br>
+NodeJS - v 10.25 <br>
 
 ## Installation
 
