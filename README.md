@@ -17,8 +17,6 @@ NodeJS - v 10.25 <br>
 
 <b>STEP 1</b>
 
-<b>IMPORTANT</b>:  You can choose either the hosted or local methods for Mongo and Elasticsearch.  You can mix and match if you prefer.
-
 Install node: https://nodejs.org/download/ (You can also install NodeJS using homebrew or any package manager.)
 
 Install bower: http://bower.io/#install-bower
@@ -26,6 +24,9 @@ Install bower: http://bower.io/#install-bower
 Install grunt: http://gruntjs.com/getting-started
 
 <b>STEP 2</b>
+
+<b>IMPORTANT</b>:  You can choose either the hosted or local methods for Mongo and Elasticsearch.  You can mix and match if you prefer.
+
 <b>Option A: Hosted Services</b>
 
 There are several config files located in the config directory.  They contain connection strings to hosted instances of ElasticSearch and MongoDB.<br>
@@ -58,10 +59,9 @@ Open up Terminal or Command Prompt. Navigate to your project folder via command 
 	$ npm install <br>
 	$ bower install<br>
 	$ grunt
-	$ node server.js
 </pre>
 
-4. Now all of your dependencies, assets and services are installed and configured.  Running the command <pre> $ node server.js </pre>  You will see a series of messages, starting with this "Action=DBConnect Message='Connected to QA MongoDB'"  That means you have successfully started your app and connected to your DB.
+4. Now all of your dependencies, assets and services are installed and configured.  Run the command <pre> $ node server.js </pre>  You will see a series of messages, starting with this "Action=DBConnect Message='Connected to QA MongoDB'"  That means you have successfully started your app and connected to your DB.
 
 5. In your browser visit http://localhost:3000 the app will load up there.
 
