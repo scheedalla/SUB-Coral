@@ -31,7 +31,7 @@ The app also uses a hosted media service for uploaders. Currently we aren't prov
 
 <b>Local Services</b>
 
-1. Install mongodb: https://docs.mongodb.org/manual/installation/ <br>
+1. Install mongodb: https://www.mongodb.org/downloads#production <br>
 	1.1  Start the Mongo service<br>
 	1.2  Create a database named sub <pre> use sub </pre><br>
 	1.3  Add user sub_test to the sub database.  Make sure the user has readWrite role on the DB and the PW matches the one in the connection string in config/db_local.js  (example below in help section) <br>
