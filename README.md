@@ -61,9 +61,9 @@ Open up Terminal or Command Prompt. Navigate to your project folder via command 
 	$ grunt
 </pre>
 
-4. Now all of your dependencies, assets and services are installed and configured.  Run the command <pre> $ node server.js </pre>  You will see a series of messages, starting with this "Action=DBConnect Message='Connected to QA MongoDB'"  That means you have successfully started your app and connected to your DB.
+Now all of your dependencies, assets and services are installed and configured.  Run the command <pre> $ node server.js </pre>  You will see a series of messages, starting with this "Action=DBConnect Message='Connected to QA MongoDB'"  That means you have successfully started your app and connected to your DB.
 
-5. In your browser visit http://localhost:3000 the app will load up there.
+In your browser visit http://localhost:3000 the app will load up there.
 
 ## Help
 
