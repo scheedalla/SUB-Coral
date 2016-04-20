@@ -15,11 +15,18 @@ NodeJS - v 10.25 <br>
 
 ## Installation
 
+<b>STEP 1</b>
+
 <b>IMPORTANT</b>:  You can choose either the hosted or local methods for Mongo and Elasticsearch.  You can mix and match if you prefer.
 
 Install node: https://nodejs.org/download/ (You can also install NodeJS using homebrew or any package manager.)
 
-<b>Hosted Services</b>
+Install bower: http://bower.io/#install-bower
+
+Install grunt: http://gruntjs.com/getting-started
+
+<b>STEP 2</b>
+<b>Option A: Hosted Services</b>
 
 There are several config files located in the config directory.  They contain connection strings to hosted instances of ElasticSearch and MongoDB.<br>
 These can be used for testing, but the data is publicly available, so do not create users with sensitive passwords, etc. <br>
@@ -31,7 +38,7 @@ Check both config files to make sure you have commented out the local connection
 
 The app also uses a hosted media service for uploaders. Currently we aren't providing a hosted or local variation of this, but will be asap.<br>
 
-<b>Local Services</b>
+<b>Option B: Local Services</b>
 
 1. Install mongodb: https://www.mongodb.org/downloads#production <br>
 	1.1  Start the Mongo service<br>
@@ -44,16 +51,19 @@ The app also uses a hosted media service for uploaders. Currently we aren't prov
 2. Set up a local Elastic search instance.<br> Follow the instructions here: <br> https://www.elastic.co/guide/en/elasticsearch/guide/current/running-elasticsearch.html  <br>
 	2.1  Check config/elastic.js to make sure you have commented out the hosted connection string and use the local connection string. <br>
 
-3.  Navigate to your project folder via command line and run the following commands in order. 
+<b>STEP 3</b>
+
+Open up Terminal or Command Prompt. Navigate to your project folder via command line (Ex: cd /Desktop/Sub-Coral) and run the following commands in order.
 <pre>
 	$ npm install <br>
 	$ bower install<br>
 	$ grunt
+	$ node server.js
 </pre>
 
-4. Now all of your dependencies, assets and services are installed and configured.  Run command <pre> $ node server.js </pre>  You will see a series of messages, starting with this "Action=DBConnect Message='Connected to QA MongoDB'"  That means you have successfully started your app and connected to your DB.
+4. Now all of your dependencies, assets and services are installed and configured.  Running the command <pre> $ node server.js </pre>  You will see a series of messages, starting with this "Action=DBConnect Message='Connected to QA MongoDB'"  That means you have successfully started your app and connected to your DB.
 
-5. In your browser visit localhost:3000 the app will load up there.
+5. In your browser visit http://localhost:3000 the app will load up there.
 
 ## Help
 
