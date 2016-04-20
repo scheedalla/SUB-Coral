@@ -22,7 +22,7 @@ Install node: https://nodejs.org/download/ (You can also install NodeJS using ho
 There are several config files located in the config directory.  They contain connection strings to hosted instances of ElasticSearch and MongoDB.<br>
 These can be used for testing, but the data is publicly available, so do not create users with sensitive passwords, etc. <br>
 
-	Mongo Config - config/db_local.js <br>
+	Mongo Config - config/db_local.js
 	ElasticSearch Config - config/elastic.js
 
 Check both config files to make sure you have commented out the local connection string and use the hosted connection string. <br>
