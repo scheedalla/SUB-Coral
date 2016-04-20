@@ -15,6 +15,8 @@ NodeJS - v 10.25 <br>
 
 ## Installation
 
+<b>IMPORTANT</b>:  You can choose either the hosted or local methods for Mongo and Elasticsearch.  You can mix and match if you prefer.
+
 Install node: https://nodejs.org/download/ (You can also install NodeJS using homebrew or any package manager.)
 
 <b>Hosted Services</b>
